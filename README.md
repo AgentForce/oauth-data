@@ -39,10 +39,4 @@ this will run on port 3000 you can change on config or
 
 
 
-## Credits to
-Angular University [complete-typescript-course](https://github.com/angular-university/complete-typescript-course)
-
-
-
-
 
