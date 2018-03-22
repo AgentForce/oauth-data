@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
+console.log(process.env);
+console.log("------");
 var index_1 = require("./server/index");
 var dotenv = require("dotenv");
 dotenv.config({ path: ".env." + process.env.NODE_ENV });
-console.log(process.env);
-console.log("------");
 var app = express();
 var server = new index_1.default(app);
 var port = process.env.PORT; //nconf.get("http:port");
