@@ -7,11 +7,11 @@ import * as nconf from "nconf";
 import Server from "./server/index";
 import * as dotenv from "dotenv";
 dotenv.config({ path: ".env." + process.env.NODE_ENV });
+console.log(process.env);
 
 const app: Application = express();
 const server: Server = new Server(app);
 const port: number = process.env.PORT;//nconf.get("http:port");
-
 app.listen(port, "localhost", function (err: any) {
     if (err) return err;
     console.info(`Server running on : http://localhost:${port}`);
