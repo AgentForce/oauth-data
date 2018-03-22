@@ -2,12 +2,13 @@ import * as Joi from 'joi';
 import { JoiObject } from 'joi';
 import { Router, Request, Response, NextFunction } from "express";
 
-export class LessonValidator {
+export class RoleValidator {
     
     constructor() { }
 
     validateBody(schema) {
         return (req: Request, res: Response, next: NextFunction) => {
+          
             const result = Joi.validate(req.body, schema);
 
             if (result.error) {
@@ -24,17 +25,14 @@ export class LessonValidator {
             }
         }
     }
-}
 
-export const lessonSchema = Joi.object().keys({
-    /*courseId: Joi.number().integer().required(),
-    url: Joi.string().trim().required(),
-    gitHubUrl: Joi.string().trim().required(),
-    tags: Joi.string().trim().required(),
-    description: Joi.string().trim(),
-    duration: Joi.string(),
-    pro: Joi.boolean(),
-    seqNo: Joi.number(),
-    createdAt: Joi.date(),
-    updatedAt: Joi.date()*/
+
+}
+ 
+
+export const roleSchema = Joi.object().keys({
+    name: Joi.string().min(3).max(125).required(),
+    role: Joi.string().regex(/^[_a-zA-Z0-9]{3,30}$/).required(),
+    resource: Joi.string().regex(/^[_a-zA-Z0-9]{3,30}$/).required(),
+    is_default: Joi.boolean()
 });

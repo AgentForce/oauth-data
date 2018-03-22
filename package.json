@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "API data oauth",
   "scripts": {
-    "start": "NODE_ENV=development nodemon ./dist/server.js",
+    "dev": "NODE_ENV=development nodemon ./dist/server.js",
+    "start": "NODE_ENV=product nodemon ./dist/server.js",
+    "build": "tsc",
     "watch": "tsc -w"
   },
   "keywords": [

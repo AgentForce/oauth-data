@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router, json } from 'express';
 
 import { apiErrorHandler } from '../handlers/errorHandler';
-import { Role } from '../models/Role';
+import { Scope } from '../models/Scope';
 import { RoleScope } from '../models/RoleScope';
 import * as Joi from 'joi';
 import { sequelize } from "./../db/db";
@@ -13,12 +13,12 @@ export default class RoleRoutes {
         
     }
 
-    async getAllRoles(req: Request, res: Response, next: NextFunction){
-        Role.findAll({  })
+    async getAllPermissions(req: Request, res: Response, next: NextFunction){
+        Scope.findAll({  })
         .then((result) => {  res.json(result)})
         .catch((err) => { console.log(err);  apiErrorHandler(err, req, res, "Fetch All Scopes failed."); });
     }
-    async getAllRolesPage(req: Request, res: Response, next: NextFunction) {
+    async getAllPermissionsPage(req: Request, res: Response, next: NextFunction) {
         let result = {
             data: [],
             msg: "",
@@ -35,7 +35,7 @@ export default class RoleRoutes {
                 .catch((err) => { throw (err);  // apiErrorHandler(err, req, res, "Fetch All Users failed."); 
             });*/
             let resQ: any;
-            resQ = await sequelize.query('SELECT public.oauth_roles.id, public.oauth_roles."role", public.oauth_roles."name", public.oauth_roles.resource, public.oauth_role_scopes.scope, public.oauth_role_scopes.name_scope FROM public.oauth_roles LEFT OUTER JOIN public.oauth_role_scopes ON (public.oauth_roles.id = public.oauth_role_scopes.id_role) ',
+            resQ = await sequelize.query('SELECT public.oauth_scopes.id, public.oauth_scopes."scope", public.oauth_scopes."name", public.oauth_scopes.resource, public.oauth_role_scopes.role, public.oauth_role_scopes.name_role FROM public.oauth_scopes LEFT OUTER JOIN public.oauth_role_scopes ON (public.oauth_scopes.id = public.oauth_role_scopes.id_scope) ',
                 { replacements: { }, type: sequelize.QueryTypes.SELECT }
             ).then(projects => {
                 return projects;
@@ -43,44 +43,44 @@ export default class RoleRoutes {
             let arrScope: any;
             arrScope = _.groupBy(resQ, "id");
             result.data = arrScope;
-            result.total = await Role.count({})
+            result.total = await Scope.count({})
                 .then((result) => { return (result);  })
                 .catch((err) => { throw (err);  // apiErrorHandler(err, req, res, "Fetch All Users failed."); 
             });            
             await res.json(result);
         } catch (error) {
             console.log(error);
-            apiErrorHandler(error, req, res, "Get all Role failed. ");
+            apiErrorHandler(error, req, res, "Get all Scope failed. ");
         }
 
        
     }
     
-    async postCreateRole(req: Request, res: Response, next: NextFunction) {
+    async postCreatePermissions(req: Request, res: Response, next: NextFunction) {
         try {
-            Role.create(req['value']['body'])
+            Scope.create(req['value']['body'])
                 .then((result) => { res.json(result); })
-                .catch((err) => { console.log(err); apiErrorHandler(err, req, res, "Creation of Role failed." + JSON.stringify(err)); });
+                .catch((err) => { console.log(err); apiErrorHandler(err, req, res, "Creation of Scope failed." + JSON.stringify(err)); });
     
         } catch (error) {
             console.log(error);
-            apiErrorHandler(error, req, res, `Insert of Roles failed.`);
+            apiErrorHandler(error, req, res, `Insert of Scope failed.`);
         }
     }
 
-    async patchUpdateRole(req: Request, res: Response, next: NextFunction) {
+    async patchUpdatePermissions(req: Request, res: Response, next: NextFunction) {
         try {
             const data_put = req['body'];
-            Role.update(data_put, { where: { id: req.params.id } })
+            Scope.update(data_put, { where: { id: req.params.id } })
                 .then((result) => { res.json(result); })
-                .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+                .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of Scope ${req.params.username}  failed.`); });
     
         } catch (error) {
-            apiErrorHandler(error, req, res, `Insert of Users failed.`);
+            apiErrorHandler(error, req, res, `Insert of Scope failed.`);
         }
     }
 
-    async putLinkRoles(req: Request, res: Response, next: NextFunction) {
+    async putLinkPermissions(req: Request, res: Response, next: NextFunction) {
         try {
             let arr_insert = [];
             await req.body.arrScope.forEach(element => {
@@ -99,32 +99,18 @@ export default class RoleRoutes {
             });
         } catch (error) {
             console.log(error);
-            apiErrorHandler(error, req, res, `Insert of Role Scope failed.`);
+            apiErrorHandler(error, req, res, `Insert of Scope Scope failed.`);
         }
     }
 
-    async getObjRoles(req: Request, res: Response, next: NextFunction) {
+    async getObjPermissions(req: Request, res: Response, next: NextFunction) {
         try {
-            let role: any;
-            role = await Role.findOne({where: { id: req.params.id }})
-            .then((result) => {  return(result)})
+            Scope.findOne({where: { id: req.params.id }})
+            .then((result) => {  res.json(result)})
             .catch((err) => { console.log(err);  apiErrorHandler(err, req, res, "Fetch All Scopes failed."); });
-            let permissions: any;
-
-            permissions = await RoleScope.find({where: { id_role: req.params.id }})
-            .then((result) => {  return(result)})
-            .catch((err) => { console.log(err);  apiErrorHandler(err, req, res, "Fetch All Scopes failed."); });
-            
-            
-            const result = {
-                role: role,
-                permissions: permissions
-            }
-            // console.log(result);
-            await res.json(result);
         } catch (error) {
             console.log(error);
-            apiErrorHandler(error, req, res, `Get of Role failed.`);
+            apiErrorHandler(error, req, res, `Get of Scope failed.`);
         }
     }
 

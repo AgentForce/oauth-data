@@ -75,7 +75,7 @@ var RoleRoutes = /** @class */ (function () {
                         if (req.params.size < 0)
                             offset = 20;
                         resQ = void 0;
-                        return [4 /*yield*/, db_1.sequelize.query('SELECT public.oauth_roles.id, public.oauth_roles."role", public.oauth_roles."name", public.oauth_roles.resource, public.oauth_role_scopes.scope, public.oauth_role_scopes.name_scope FROM public.oauth_roles LEFT OUTER JOIN public.oauth_role_scopes ON (public.oauth_roles.id = public.oauth_role_scopes.id_role) ', { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                        return [4 /*yield*/, db_1.sequelize.query('SELECT public.oauth_roles.id, "role", public.oauth_roles."name", public.oauth_roles.resource, public.oauth_role_scopes.scope, public.oauth_role_scopes.name_scope FROM public.oauth_roles LEFT OUTER JOIN public.oauth_role_scopes ON (public.oauth_roles.id = public.oauth_role_scopes.id_role) ', { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
                                 return projects;
                             })];
                     case 2:
@@ -177,44 +177,21 @@ var RoleRoutes = /** @class */ (function () {
     };
     RoleRoutes.prototype.getObjRoles = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var role, permissions, result, error_3;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 4, , 5]);
-                        role = void 0;
-                        return [4 /*yield*/, Role_1.Role.findOne({ where: { id: req.params.id } })
-                                .then(function (result) { return (result); })
-                                .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Fetch All Scopes failed."); })];
-                    case 1:
-                        role = _a.sent();
-                        permissions = void 0;
-                        return [4 /*yield*/, RoleScope_1.RoleScope.find({ where: { id_role: req.params.id } })
-                                .then(function (result) { return (result); })
-                                .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Fetch All Scopes failed."); })];
-                    case 2:
-                        permissions = _a.sent();
-                        result = {
-                            role: role,
-                            permissions: permissions
-                        };
-                        // console.log(result);
-                        return [4 /*yield*/, res.json(result)];
-                    case 3:
-                        // console.log(result);
-                        _a.sent();
-                        return [3 /*break*/, 5];
-                    case 4:
-                        error_3 = _a.sent();
-                        console.log(error_3);
-                        errorHandler_1.apiErrorHandler(error_3, req, res, "Get of Role failed.");
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                try {
+                    Role_1.Role.findOne({ where: { id: req.params.id } })
+                        .then(function (result) { res.json(result); })
+                        .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Fetch All Scopes failed."); });
                 }
+                catch (error) {
+                    console.log(error);
+                    errorHandler_1.apiErrorHandler(error, req, res, "Get of Role failed.");
+                }
+                return [2 /*return*/];
             });
         });
     };
     return RoleRoutes;
 }());
 exports.default = RoleRoutes;
-//# sourceMappingURL=RolesCtrl.js.map
+//# sourceMappingURL=RolesCtrl.1.js.map

@@ -30,6 +30,7 @@ exports.userSchema = Joi.object().keys({
     password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
     phone: Joi.string().trim().required(),
     address: Joi.string().trim(),
+    report_to: Joi.string().trim(),
     city: Joi.number().integer(),
     district: Joi.number().integer(),
     gender: Joi.number().integer(),

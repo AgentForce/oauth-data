@@ -10,4 +10,4 @@ exports.Role = db_1.sequelize.define("oauth_role", {
     createdAt: ORM.DATE,
     updatedAt: ORM.DATE
 });
-//# sourceMappingURL=Role.js.map
+//# sourceMappingURL=Role.1.js.map

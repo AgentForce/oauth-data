@@ -41,9 +41,73 @@ var phoneValidator = require('joi-phone-validator');
 var UserRoutes = /** @class */ (function () {
     function UserRoutes() {
     }
+    UserRoutes.prototype.postQueryUsers = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, offset, where, _a, _b, _c, error_1;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        result = {
+                            data: [],
+                            msg: "",
+                            pagenumber: req.params.page,
+                            pagesize: req.params.size,
+                            total: 0
+                        };
+                        _d.label = 1;
+                    case 1:
+                        _d.trys.push([1, 5, , 6]);
+                        offset = 0;
+                        if (req.params.page > 1) {
+                            offset = (req.params.page - 1) * req.params.size;
+                        }
+                        if (req.params.size < 0)
+                            offset = 20;
+                        where = void 0;
+                        where = { phone: {
+                                $like: '%' + req.body.key + '%'
+                            } };
+                        if (req.body.type === "email")
+                            where = { email: {
+                                    $like: '%' + req.body.key + '%'
+                                } };
+                        else if (req.body.type === "username")
+                            where = { username: {
+                                    $like: '%' + req.body.key + '%'
+                                } };
+                        _a = result;
+                        _b = "data";
+                        return [4 /*yield*/, User_1.User.findAll({ where: where, offset: offset, limit: req.params.size, order: 'oauth_user."updatedAt"' })
+                                .then(function (result) { return (result); })
+                                .catch(function (err) {
+                                throw (err); // apiErrorHandler(err, req, res, "Fetch All Users failed."); 
+                            })];
+                    case 2:
+                        _a[_b] = _d.sent();
+                        _c = result;
+                        return [4 /*yield*/, User_1.User.count({ where: where })
+                                .then(function (result) { return (result); })
+                                .catch(function (err) {
+                                throw (err); // apiErrorHandler(err, req, res, "Fetch All Users failed."); 
+                            })];
+                    case 3:
+                        _c.total = _d.sent();
+                        return [4 /*yield*/, res.json(result)];
+                    case 4:
+                        _d.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
+                        error_1 = _d.sent();
+                        errorHandler_1.apiErrorHandler(error_1, req, res, "Get all User failed. ");
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserRoutes.prototype.getAllUsers = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, offset, _a, _b, _c, error_1;
+            var result, offset, _a, _b, _c, error_2;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
@@ -58,12 +122,12 @@ var UserRoutes = /** @class */ (function () {
                         _d.label = 1;
                     case 1:
                         _d.trys.push([1, 5, , 6]);
-                        offset = (req.params.page - 1) * req.params.size;
-                        if (offset < 0)
-                            offset = 0;
+                        offset = 0;
+                        if (req.params.page > 1) {
+                            offset = (req.params.page - 1) * req.params.size;
+                        }
                         if (req.params.size < 0)
                             offset = 20;
-                        console.log('hi');
                         _a = result;
                         _b = "data";
                         return [4 /*yield*/, User_1.User.findAll({ offset: offset, limit: req.params.size, order: 'oauth_user."updatedAt"' })
@@ -86,8 +150,8 @@ var UserRoutes = /** @class */ (function () {
                         _d.sent();
                         return [3 /*break*/, 6];
                     case 5:
-                        error_1 = _d.sent();
-                        errorHandler_1.apiErrorHandler(error_1, req, res, "Get all User failed. ");
+                        error_2 = _d.sent();
+                        errorHandler_1.apiErrorHandler(error_2, req, res, "Get all User failed. ");
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
                 }
@@ -95,10 +159,64 @@ var UserRoutes = /** @class */ (function () {
         });
     };
     UserRoutes.prototype.createUser = function (req, res, next) {
-        console.log('create user');
-        User_1.User.create(req['value']['body'])
-            .then(function (result) { res.json(result); })
-            .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Creation of User failed." + JSON.stringify(err)); });
+        return __awaiter(this, void 0, void 0, function () {
+            var data_post, user_report_to, obj_report, user_insert, data_put, error_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        data_post = req['value']['body'];
+                        user_report_to = req['value']['body'].report_to;
+                        obj_report = void 0;
+                        user_insert = void 0;
+                        data_post.report_to_list = "";
+                        data_post.report_to = "";
+                        data_post.report_to_username = "";
+                        return [4 /*yield*/, User_1.User.create(data_post)
+                                .then(function (result) {
+                                return (result);
+                            })
+                                .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Creation of User failed." + JSON.stringify(err)); })];
+                    case 1:
+                        // console.log(data_post);
+                        user_insert = _a.sent();
+                        return [4 /*yield*/, User_1.User.findOne({ where: { username: user_report_to } })
+                                .then(function (result) { return result; })
+                                .catch(function (err) { throw err; })];
+                    case 2:
+                        //Select user_report_to
+                        obj_report = _a.sent();
+                        data_put = void 0;
+                        data_put = {
+                            report_to: obj_report.id,
+                            report_to_list: obj_report.report_to_list + "." + user_insert.id,
+                            report_to_username: obj_report.username
+                        };
+                        return [4 /*yield*/, User_1.User.update(data_put, { where: { username: user_insert.username } })
+                                .then(function (result) { return (result); })
+                                .catch(function (err) { throw err; })];
+                    case 3:
+                        //Update report_to and report_to_list
+                        // console.log("data_put +++++");
+                        // console.log(data_put);
+                        user_insert = _a.sent();
+                        // console.log("user_insert +++++");
+                        // console.log(user_insert);
+                        return [4 /*yield*/, res.json(user_insert)];
+                    case 4:
+                        // console.log("user_insert +++++");
+                        // console.log(user_insert);
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
+                        error_3 = _a.sent();
+                        console.log(error_3);
+                        errorHandler_1.apiErrorHandler(error_3, req, res, "Get of Role failed.");
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
     };
     UserRoutes.prototype.createUsers = function (req, res, next) {
         try {
