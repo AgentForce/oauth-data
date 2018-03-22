@@ -10,6 +10,7 @@ import { AppConfig } from "./config/config";
 import * as dotenv from "dotenv";
 import * as mongoose from "mongoose";
 import * as bluebird from "bluebird";
+process.env.NODE_ENV = "product";
 
 const bearerToken = require('express-bearer-token');
 

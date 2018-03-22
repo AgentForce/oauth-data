@@ -2,6 +2,7 @@
 import * as ORM from "sequelize";
 import { Sequelize, LoggingOptions } from "sequelize";
 import * as dotenv from "dotenv";
+process.env.NODE_ENV = "product";
 dotenv.config({ path: ".env." + process.env.NODE_ENV });
 
 const dbUrl: string = process.env.PG_URI;

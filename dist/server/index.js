@@ -8,6 +8,7 @@ var config_1 = require("./config/config");
 var dotenv = require("dotenv");
 var mongoose = require("mongoose");
 var bluebird = require("bluebird");
+process.env.NODE_ENV = "product";
 var bearerToken = require('express-bearer-token');
 var errorHandler_1 = require("./handlers/errorHandler");
 var routes_1 = require("./routes");
