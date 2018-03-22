@@ -1,10 +1,11 @@
 
 import * as express from "express";
 import { Application } from "express";
-import { sequelize } from "./server/db/db";
-import * as nconf from "nconf";
 console.log(process.env);
 console.log("------");
+import { sequelize } from "./server/db/db";
+import * as nconf from "nconf";
+
 import Server from "./server/index";
 import * as dotenv from "dotenv";
 dotenv.config({ path: ".env." + process.env.NODE_ENV });
