@@ -1,4 +1,4 @@
-
+process.env.NODE_ENV = "product";
 import * as express from "express";
 import { Application } from "express";
 console.log(process.env);
