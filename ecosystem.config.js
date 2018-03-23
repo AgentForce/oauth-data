@@ -10,7 +10,7 @@ module.exports = {
       name      : 'Data Oauth',
       script    : './dist/server.js',
       env: {
-        NODE_ENV: 'development'
+        NODE_ENV: 'production'
       },
       env_production : {
         NODE_ENV: 'production'
@@ -39,13 +39,13 @@ module.exports = {
     },
     dev : {
       user : 'node',
-      host : '212.83.163.1',
+      host : '13.250.129.169',
       ref  : 'origin/master',
       repo : 'git@github.com:repo.git',
       path : '/var/www/development',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env dev',
       env  : {
-        NODE_ENV: 'dev'
+        NODE_ENV: 'development'
       }
     }
   }
