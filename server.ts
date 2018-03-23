@@ -12,7 +12,8 @@ dotenv.config({ path: ".env." + process.env.NODE_ENV });
 
 const app: Application = express();
 const server: Server = new Server(app);
-const port: number = process.env.PORT;//nconf.get("http:port");
+// const port: number = process.env.PORT;//nconf.get("http:port");
+const port = 4200;
 app.listen(port, "localhost", function (err: any) {
     if (err) return err;
     console.info(`Server running on : http://localhost:${port}`);
