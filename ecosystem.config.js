@@ -20,7 +20,10 @@ module.exports = {
     // Second application
     {
       name      : 'API Data OAuth',
-      script    : './dist/server.js'
+      script    : './dist/server.js',
+      env: {
+        NODE_ENV: 'product'
+      }
     }
   ],
 
