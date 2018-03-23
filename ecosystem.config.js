@@ -19,8 +19,8 @@ module.exports = {
 
     // Second application
     {
-      name      : 'WEB',
-      script    : 'web.js'
+      name      : 'API Data OAuth',
+      script    : './dist/server.js'
     }
   ],
 
