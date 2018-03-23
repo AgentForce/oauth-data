@@ -22,7 +22,6 @@ var Server = /** @class */ (function () {
     Server.prototype.config = function (app) {
         // Connect to MongoDB
         var mongoUrl = process.env.MONGOLAB_URI;
-        mongoUrl = "mongodb://oauth2:oauth2MNL@13.250.129.169:27017/log_oauth2";
         mongoose.Promise = bluebird;
         mongoose.connect(mongoUrl, {}).then(function () { }).catch(function (err) {
             console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);

@@ -6,7 +6,7 @@ module.exports = {
   apps : [
 
     // First application
-    {
+    /*{
       name      : 'Data Oauth',
       script    : './dist/server.js',
       env: {
@@ -15,7 +15,7 @@ module.exports = {
       env_production : {
         NODE_ENV: 'production'
       }
-    },
+    },*/
 
     // Second application
     {
