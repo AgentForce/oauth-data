@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+console.log(process.env);
+console.log("=====");
 process.env.NODE_ENV = "product";
+console.log(process.env);
 var express = require("express");
 console.log(process.env);
 console.log("------");
