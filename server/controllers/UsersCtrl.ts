@@ -173,7 +173,7 @@ export default class UserRoutes {
 
     updatePassUser(req: Request, res: Response, next: NextFunction) {
         
-        const data_put = {password: req['value']['body'].password};
+        const data_put = {password: req.body.password};
         User.update(data_put, { where: { username: req.params.username } })
             .then((result) => { res.json(result); })
             .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
