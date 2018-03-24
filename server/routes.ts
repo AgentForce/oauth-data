@@ -21,9 +21,9 @@ export default class Routes {
     constructor(app: Application) { 
 
         //user routes
+        app.route("/api/users/getInfo/:username").get(this.tokenValidator.checkToken(), this.usersCtrl.getUserById);
         app.route("/api/users/:page/:size").get(this.tokenValidator.checkToken(), this.usersCtrl.getAllUsers);
         app.route("/api/users/:page/:size").post( this.tokenValidator.checkToken(), this.usersCtrl.postQueryUsers);
-        app.route("/api/users/getInfo/:username").get(this.tokenValidator.checkToken(), this.usersCtrl.getUserById);
         app.route("/api/users/updateStatusOtp/:username").get(this.tokenValidator.checkToken(), this.usersCtrl.updateStatusOTPUser);
         app.route("/api/users/updatePhone/:username").patch(this.tokenValidator.checkToken() ,this.userValidator.validateBody(userPhoneSchema), this.usersCtrl.updatePhoneUser);
         app.route("/api/users/add").post(this.tokenValidator.checkToken(), this.userValidator.validateBody(userSchema), this.usersCtrl.createUser);
