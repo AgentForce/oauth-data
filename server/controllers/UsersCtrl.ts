@@ -176,14 +176,34 @@ export default class UserRoutes {
         
         const data_put = {password: req.body.password};
         User.update(data_put, { where: { username: req.params.username } })
-            .then((result) => { res.json(result); })
+            .then((result) => {
+                const res_return = {
+                    "success": true,
+                    "result": result
+                }
+                if( result[0] < 1 ){
+                    res_return.success = false;
+                }
+                res.json(res_return);
+             })
             .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
     }
 
     updateStatusOTPUser(req: Request, res: Response, next: NextFunction) {
         const data_put = {status: 1};
         User.update(data_put, { where: { username: req.params.username } })
-            .then((result) => { res.json(result); })
+            .then((result) => { 
+
+                const res_return = {
+                    "success": true,
+                    "result": result
+                }
+                if( result[0] < 1 ){
+                    res_return.success = false;
+                }
+                res.json(res_return)
+
+            })
             .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.id}  failed.`); });
     }
 
@@ -205,7 +225,17 @@ export default class UserRoutes {
 
     getUserById(req: Request, res: Response, next: NextFunction) {
         User.find({ where: { 'username': req.params.username } })
-            .then((result) => res.json(result))
+            .then((result: any) => {
+
+                const res_return = {
+                    "success": true,
+                    "result": result
+                }
+                if( ! result ){
+                    res_return.success = false;
+                }
+                res.json(res_return)
+            })
             .catch((err) => { apiErrorHandler(err, req, res, `User ${req.params.id} not found.`); });
     }
 }

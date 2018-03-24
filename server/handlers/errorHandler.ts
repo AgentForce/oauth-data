@@ -37,10 +37,18 @@ export function apiErrorHandler(err: any, req: Request, res: Response, message: 
         const error: object = { "Message": message, "Request": "req", "Stack": JSON.stringify(err) };
         winston.error("==============");
         winston.error(JSON.stringify(error));
-        res.json({ "Message": message });
+        const res_return = {
+            "success": false,
+            "result": message
+        }
+        res.json(res_return);
     } catch (error) {
         winston.error(JSON.stringify(error));
-        res.json({ "Message": message });
+        const res_return = {
+            "success": false,
+            "result": error
+        }
+        res.json(res_return);
     }
     
 }

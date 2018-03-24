@@ -253,13 +253,31 @@ var UserRoutes = /** @class */ (function () {
     UserRoutes.prototype.updatePassUser = function (req, res, next) {
         var data_put = { password: req.body.password };
         User_1.User.update(data_put, { where: { username: req.params.username } })
-            .then(function (result) { res.json(result); })
+            .then(function (result) {
+            var res_return = {
+                "success": true,
+                "result": result
+            };
+            if (result[0] < 1) {
+                res_return.success = false;
+            }
+            res.json(res_return);
+        })
             .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
     };
     UserRoutes.prototype.updateStatusOTPUser = function (req, res, next) {
         var data_put = { status: 1 };
         User_1.User.update(data_put, { where: { username: req.params.username } })
-            .then(function (result) { res.json(result); })
+            .then(function (result) {
+            var res_return = {
+                "success": true,
+                "result": result
+            };
+            if (result[0] < 1) {
+                res_return.success = false;
+            }
+            res.json(res_return);
+        })
             .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.id + "  failed."); });
     };
     UserRoutes.prototype.updateDeactive = function (req, res, next) {
@@ -276,7 +294,16 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.getUserById = function (req, res, next) {
         User_1.User.find({ where: { 'username': req.params.username } })
-            .then(function (result) { return res.json(result); })
+            .then(function (result) {
+            var res_return = {
+                "success": true,
+                "result": result
+            };
+            if (!result) {
+                res_return.success = false;
+            }
+            res.json(res_return);
+        })
             .catch(function (err) { errorHandler_1.apiErrorHandler(err, req, res, "User " + req.params.id + " not found."); });
     };
     return UserRoutes;
