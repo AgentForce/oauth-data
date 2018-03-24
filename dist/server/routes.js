@@ -17,10 +17,10 @@ var Routes = /** @class */ (function () {
         this.scopeValidator = new scopeValidator_1.ScopeValidator();
         this.permissionsCtrl = new PermissionsCtrl_1.default();
         //user routes
+        app.route("/api/users/updateStatusOtp/:username").get(this.tokenValidator.checkToken(), this.usersCtrl.updateStatusOTPUser);
         app.route("/api/users/getInfo/:username").get(this.tokenValidator.checkToken(), this.usersCtrl.getUserById);
         app.route("/api/users/:page/:size").get(this.tokenValidator.checkToken(), this.usersCtrl.getAllUsers);
         app.route("/api/users/:page/:size").post(this.tokenValidator.checkToken(), this.usersCtrl.postQueryUsers);
-        app.route("/api/users/updateStatusOtp/:username").get(this.tokenValidator.checkToken(), this.usersCtrl.updateStatusOTPUser);
         app.route("/api/users/updatePhone/:username").patch(this.tokenValidator.checkToken(), this.userValidator.validateBody(userValidator_1.userPhoneSchema), this.usersCtrl.updatePhoneUser);
         app.route("/api/users/add").post(this.tokenValidator.checkToken(), this.userValidator.validateBody(userValidator_1.userSchema), this.usersCtrl.createUser);
         app.route("/api/users/addList").post(this.tokenValidator.checkToken(), this.usersCtrl.createUsers);
