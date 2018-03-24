@@ -171,6 +171,14 @@ export default class UserRoutes {
             .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
     }
 
+    updatePassUser(req: Request, res: Response, next: NextFunction) {
+        
+        const data_put = {password: req['value']['body'].password};
+        User.update(data_put, { where: { username: req.params.username } })
+            .then((result) => { res.json(result); })
+            .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+    }
+
     updateStatusOTPUser(req: Request, res: Response, next: NextFunction) {
         const data_put = {status: 1};
         User.update(data_put, { where: { username: req.params.username } })

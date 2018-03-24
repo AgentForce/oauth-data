@@ -249,6 +249,12 @@ var UserRoutes = /** @class */ (function () {
             .then(function (result) { res.json(result); })
             .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
     };
+    UserRoutes.prototype.updatePassUser = function (req, res, next) {
+        var data_put = { password: req['value']['body'].password };
+        User_1.User.update(data_put, { where: { username: req.params.username } })
+            .then(function (result) { res.json(result); })
+            .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+    };
     UserRoutes.prototype.updateStatusOTPUser = function (req, res, next) {
         var data_put = { status: 1 };
         User_1.User.update(data_put, { where: { username: req.params.username } })
