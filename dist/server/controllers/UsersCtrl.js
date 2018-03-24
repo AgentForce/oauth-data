@@ -235,12 +235,13 @@ var UserRoutes = /** @class */ (function () {
     UserRoutes.prototype.updateBadgeLevel = function (req, res, next) {
         try {
             var data_put = req['value']['body'];
+            console.log(data_put);
             User_1.User.update(data_put, { where: { username: req.params.username } })
                 .then(function (result) { res.json(result); })
                 .catch(function (err) { throw err; });
         }
         catch (error) {
-            errorHandler_1.apiErrorHandler(error, req, res, "updation of User " + req.params.id + "  failed.");
+            errorHandler_1.apiErrorHandler(error, req, res, "updation of User " + req.params.username + "  failed.");
         }
     };
     UserRoutes.prototype.updatePhoneUser = function (req, res, next) {

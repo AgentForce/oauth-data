@@ -154,11 +154,12 @@ export default class UserRoutes {
     updateBadgeLevel(req: Request, res: Response, next: NextFunction) {
         try {
             const data_put = req['value']['body'];
+            console.log(data_put);
             User.update(data_put, { where: { username: req.params.username } })
                 .then((result) => { res.json(result); })
                 .catch((err) => { throw err; });
         } catch (error) {
-            apiErrorHandler(error, req, res, `updation of User ${req.params.id}  failed.`); 
+            apiErrorHandler(error, req, res, `updation of User ${req.params.username}  failed.`); 
         }
         
     }
