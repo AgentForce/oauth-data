@@ -13,7 +13,7 @@ var bearerToken = require('express-bearer-token');
 var errorHandler_1 = require("./handlers/errorHandler");
 var routes_1 = require("./routes");
 // Load environment variables from .env file, where API keys and passwords are configured
-dotenv.config({ path: ".env." + process.env.NODE_ENV });
+dotenv.config({ path: ".env.product" });
 var Server = /** @class */ (function () {
     function Server(app) {
         this.config(app);
