@@ -83,7 +83,8 @@ export default class RoleRoutes {
     async putLinkRoles(req: Request, res: Response, next: NextFunction) {
         try {
             let arr_insert = [];
-            await req.body.arrScope.forEach(element => {
+            console.log(req.body);
+            await req.body.forEach(element => {
                 const obj = {id_role: req.params.id_role, id_scope: element.id, name_scope: element.name_scope, scope: element.scope};
                 arr_insert.push(obj);
             });
@@ -105,23 +106,26 @@ export default class RoleRoutes {
 
     async getObjRoles(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("getObjRoles");
             let role: any;
             role = await Role.findOne({where: { id: req.params.id }})
             .then((result) => {  return(result)})
             .catch((err) => { console.log(err);  apiErrorHandler(err, req, res, "Fetch All Scopes failed."); });
             let permissions: any;
-
-            permissions = await RoleScope.find({where: { id_role: req.params.id }})
+            console.log("role =======");
+            console.log(role);
+            permissions = await RoleScope.findAll({where: { id_role: req.params.id }})
             .then((result) => {  return(result)})
             .catch((err) => { console.log(err);  apiErrorHandler(err, req, res, "Fetch All Scopes failed."); });
-            
-            
+            console.log(permissions);
+            console.log("role permissions");
             const result = {
                 role: role,
                 permissions: permissions
             }
             // console.log(result);
             await res.json(result);
+            console.log("return kqqqqq");
         } catch (error) {
             console.log(error);
             apiErrorHandler(error, req, res, `Get of Role failed.`);

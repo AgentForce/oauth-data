@@ -160,7 +160,7 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.createUser = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var data_post, user_report_to, obj_report, user_insert, data_put, error_3;
+            var data_post, user_report_to, obj_report, user_insert, report_to_list, data_put, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -186,10 +186,14 @@ var UserRoutes = /** @class */ (function () {
                     case 2:
                         //Select user_report_to
                         obj_report = _a.sent();
+                        report_to_list = '';
+                        if (obj_report.report_to_list != '') {
+                            report_to_list = obj_report.report_to_list + ".";
+                        }
                         data_put = void 0;
                         data_put = {
                             report_to: obj_report.id,
-                            report_to_list: obj_report.report_to_list + "." + user_insert.id,
+                            report_to_list: report_to_list + user_insert.id,
                             report_to_username: obj_report.username
                         };
                         return [4 /*yield*/, User_1.User.update(data_put, { where: { username: user_insert.username } })
@@ -219,18 +223,54 @@ var UserRoutes = /** @class */ (function () {
         });
     };
     UserRoutes.prototype.createUsers = function (req, res, next) {
-        try {
-            User_1.User.bulkCreate(req.body).then(function () {
-                res.json('không insert');
-            }).then(function (users) {
-                res.json(users); // ... in order to get the array of user objects
-            }).catch(function (err) {
-                //Insert từng dòng và ghi nhận lỗi
+        return __awaiter(this, void 0, void 0, function () {
+            var arrUsers, arrResUsers, index, element, obj, user_support, resObj, error_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 6, , 7]);
+                        arrUsers = req.body;
+                        arrResUsers = [];
+                        index = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(index < arrUsers.length)) return [3 /*break*/, 4];
+                        element = arrUsers[index];
+                        obj = {
+                            username: element.username.trim(),
+                            phone: element.phone.trim(),
+                            level: parseInt(element.level.trim()),
+                            code_level: element.label.trim(),
+                            fullName: element.fullname.trim(),
+                            identity_card: element.cmnd.trim(),
+                            report_to: element.reportto.trim(),
+                            resource_ids: "SOP_API"
+                            // role: "5ab1cfbb3a2e5604a5314fb5"
+                        };
+                        user_support = new UserSupport();
+                        return [4 /*yield*/, user_support.createUserObj(obj)];
+                    case 2:
+                        resObj = _a.sent();
+                        arrResUsers[index] = resObj;
+                        console.log(resObj);
+                        _a.label = 3;
+                    case 3:
+                        index++;
+                        return [3 /*break*/, 1];
+                    case 4: return [4 /*yield*/, res.json(arrResUsers)];
+                    case 5:
+                        _a.sent();
+                        return [3 /*break*/, 7];
+                    case 6:
+                        error_4 = _a.sent();
+                        console.log(error_4);
+                        console.log("+_++_++++___");
+                        errorHandler_1.apiErrorHandler(error_4, req, res, "Insert of Users failed.");
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
             });
-        }
-        catch (error) {
-            errorHandler_1.apiErrorHandler(error, req, res, "Insert of Users failed.");
-        }
+        });
     };
     UserRoutes.prototype.updateBadgeLevel = function (req, res, next) {
         try {
@@ -252,6 +292,21 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.updatePassUser = function (req, res, next) {
         var data_put = { password: req.body.password };
+        User_1.User.update(data_put, { where: { username: req.params.username } })
+            .then(function (result) {
+            var res_return = {
+                "success": true,
+                "result": result
+            };
+            if (result[0] < 1) {
+                res_return.success = false;
+            }
+            res.json(res_return);
+        })
+            .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+    };
+    UserRoutes.prototype.resetPassUser = function (req, res, next) {
+        var data_put = { password: "uK8748", status: 0 };
         User_1.User.update(data_put, { where: { username: req.params.username } })
             .then(function (result) {
             var res_return = {
@@ -309,4 +364,74 @@ var UserRoutes = /** @class */ (function () {
     return UserRoutes;
 }());
 exports.default = UserRoutes;
+var UserSupport = /** @class */ (function () {
+    function UserSupport() {
+    }
+    UserSupport.prototype.createUserObj = function (data_post) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user_report_to, obj_report, user_insert, report_to_list, data_put, error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        user_report_to = data_post.report_to;
+                        obj_report = void 0;
+                        user_insert = void 0;
+                        data_post.report_to_list = "";
+                        data_post.report_to = "";
+                        data_post.report_to_username = "";
+                        return [4 /*yield*/, User_1.User.create(data_post)
+                                .then(function (result) {
+                                return (result);
+                            })
+                                .catch(function (err) { throw err; })];
+                    case 1:
+                        // console.log(data_post);
+                        user_insert = _a.sent();
+                        return [4 /*yield*/, User_1.User.findOne({ where: { username: user_report_to } })
+                                .then(function (result) { return result; })
+                                .catch(function (err) { throw err; })];
+                    case 2:
+                        //Select user_report_to
+                        obj_report = _a.sent();
+                        report_to_list = '';
+                        if (obj_report.report_to_list != '') {
+                            report_to_list = obj_report.report_to_list + ".";
+                        }
+                        data_put = void 0;
+                        data_put = {
+                            report_to: obj_report.id,
+                            report_to_list: report_to_list + user_insert.id,
+                            report_to_username: obj_report.username
+                        };
+                        return [4 /*yield*/, User_1.User.update(data_put, { where: { username: user_insert.username } })
+                                .then(function (result) { return (result); })
+                                .catch(function (err) { throw err; })];
+                    case 3:
+                        //Update report_to and report_to_list
+                        // console.log("data_put +++++");
+                        // console.log(data_put);
+                        user_insert = _a.sent();
+                        // console.log("user_insert +++++");
+                        // console.log(user_insert);
+                        data_post.resultInsert = "Thành công";
+                        data_post.style = "white";
+                        console.log(data_post);
+                        return [2 /*return*/, data_post
+                            // console.log("======");
+                        ];
+                    case 4:
+                        error_5 = _a.sent();
+                        console.log(error_5);
+                        data_post.resultInsert = "Thất bại";
+                        data_post.style = "red";
+                        return [2 /*return*/, data_post];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return UserSupport;
+}());
+exports.UserSupport = UserSupport;
 //# sourceMappingURL=UsersCtrl.js.map

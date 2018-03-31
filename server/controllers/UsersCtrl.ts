@@ -105,11 +105,14 @@ export default class UserRoutes {
             //Update user_report_to
             // console.log("obj_report +++++");
             // console.log(obj_report);
-
+            let report_to_list = '';
+            if(obj_report.report_to_list != ''){
+                report_to_list = obj_report.report_to_list + ".";
+            }
             let data_put: any;
             data_put = {
                 report_to : obj_report.id,
-                report_to_list: obj_report.report_to_list + "." + user_insert.id,
+                report_to_list:  report_to_list + user_insert.id,
                 report_to_username: obj_report.username
             }
 
@@ -136,21 +139,50 @@ export default class UserRoutes {
         
     }
 
-    createUsers(req: Request, res: Response, next: NextFunction){
+    async createUsers(req: Request, res: Response, next: NextFunction){
         try {
-            User.bulkCreate(req.body).then(() => { // Notice: There are no arguments here, as of right now you'll have to...
+            // username,phone,,,,,
+            const arrUsers = req.body;
+            const arrResUsers = [];
+            for (let index = 0; index < arrUsers.length; index++) {
+                const element = arrUsers[index];
+                let obj = {
+                    username: element.username.trim(),
+                    phone: element.phone.trim(),
+                    level: parseInt(element.level.trim()),
+                    code_level: element.label.trim(),
+                    fullName: element.fullname.trim(),
+                    identity_card: element.cmnd.trim(),
+                    report_to: element.reportto.trim(),
+                    resource_ids: "SOP_API"
+                    // role: "5ab1cfbb3a2e5604a5314fb5"
+                }
+                const user_support = new UserSupport();
+                const resObj = await user_support.createUserObj(obj);
+                arrResUsers[index] = resObj;
+                console.log(resObj);
+                // const element = await array[index];
+                
+            }
+            
+            await res.json(arrResUsers);
+            /*User.bulkCreate(req.body).then(() => { // Notice: There are no arguments here, as of right now you'll have to...
                 res.json('không insert');
             }).then(users => {
                 res.json(users); // ... in order to get the array of user objects
             }).catch((err) => { 
                 //Insert từng dòng và ghi nhận lỗi
                 
-            });
+            });*/
         } catch (error) {
+            console.log(error);
+            console.log("+_++_++++___");
             apiErrorHandler(error, req, res, `Insert of Users failed.`);
         }
         
     }
+    
+
     updateBadgeLevel(req: Request, res: Response, next: NextFunction) {
         try {
             const data_put = req['value']['body'];
@@ -175,6 +207,23 @@ export default class UserRoutes {
     updatePassUser(req: Request, res: Response, next: NextFunction) {
         
         const data_put = {password: req.body.password};
+        User.update(data_put, { where: { username: req.params.username } })
+            .then((result) => {
+                const res_return = {
+                    "success": true,
+                    "result": result
+                }
+                if( result[0] < 1 ){
+                    res_return.success = false;
+                }
+                res.json(res_return);
+             })
+            .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+    }
+
+    resetPassUser(req: Request, res: Response, next: NextFunction) {
+        
+        const data_put = {password: "uK8748", status: 0};
         User.update(data_put, { where: { username: req.params.username } })
             .then((result) => {
                 const res_return = {
@@ -237,5 +286,72 @@ export default class UserRoutes {
                 res.json(res_return)
             })
             .catch((err) => { apiErrorHandler(err, req, res, `User ${req.params.id} not found.`); });
+    }
+}
+
+export class UserSupport {
+
+    constructor() { 
+        
+    }
+    async createUserObj(data_post) {
+        // console.log('create user');
+        // Xử lý data 
+        try {
+            // console.log("Data post +++");
+            const user_report_to = data_post.report_to;
+            let obj_report: any;
+            let user_insert: any;
+            data_post.report_to_list = "";
+            data_post.report_to = "";
+            data_post.report_to_username = "";
+            // console.log(data_post);
+            user_insert = await User.create(data_post)
+                            .then((result) => { 
+                                return (result); })
+                            .catch((err) => { throw err; });
+            //Select user_report_to
+            obj_report = await User.findOne({where: { username: user_report_to }})
+                                    .then((result) => {  return result; })
+                                    .catch((err) => { throw err; });
+            //Update user_report_to
+            // console.log("obj_report +++++");
+            // console.log(obj_report);
+            let report_to_list = '';
+            if(obj_report.report_to_list != ''){
+                report_to_list = obj_report.report_to_list + ".";
+            }
+            let data_put: any;
+            data_put = {
+                report_to : obj_report.id,
+                report_to_list:  report_to_list + user_insert.id,
+                report_to_username: obj_report.username
+            }
+
+            //Update report_to and report_to_list
+            // console.log("data_put +++++");
+            // console.log(data_put);
+            
+            user_insert = await User.update(data_put, { where: { username: user_insert.username } })
+                .then((result) => { return (result); })
+                .catch((err) => { throw err; });
+
+            // console.log("user_insert +++++");
+            // console.log(user_insert);
+            data_post.resultInsert = "Thành công";
+            data_post.style = "white";
+            console.log(data_post);
+            return data_post
+            // console.log("======");
+        
+                
+            
+        } catch (error) {
+            console.log(error);
+            data_post.resultInsert = "Thất bại";
+            data_post.style = "red";
+            return data_post;
+        }
+        
     }
 }

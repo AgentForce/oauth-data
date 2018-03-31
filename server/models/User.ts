@@ -26,5 +26,6 @@ export const User = sequelize.define("oauth_user", {
     updatedAt: ORM.DATE,
     report_to : ORM.STRING,
     report_to_list: ORM.STRING,
-    report_to_username: ORM.STRING
+    report_to_username: ORM.STRING,
+    identity_card: ORM.STRING
 });
