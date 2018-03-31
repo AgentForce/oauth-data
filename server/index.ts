@@ -18,7 +18,7 @@ import { unCoughtErrorHandler } from "./handlers/errorHandler";
 import Routes from "./routes";
 
 // Load environment variables from .env file, where API keys and passwords are configured
-dotenv.config({ path: ".env." + process.env.NODE_ENV });
+dotenv.config({ path: ".env.product" });
 
 export default class Server {
 
