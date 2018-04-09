@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router, json } from 'express';
 
 import { apiErrorHandler } from '../handlers/errorHandler';
+import { BaseApi } from "../handlers/api";
 import { User } from '../models/User';
 import * as Joi from 'joi';
 var phoneValidator = require('joi-phone-validator');
@@ -67,7 +68,10 @@ export default class UserRoutes {
                 offset = (req.params.page -1) * req.params.size ;
             }
             if(req.params.size < 0) offset = 20;
-            result["data"] = await User.findAll({ offset: offset, limit: req.params.size ,order: 'oauth_user."updatedAt"'})
+            result["data"] = await User.findAll({ offset: offset, limit: req.params.size ,order: [
+                ['updatedAt', 'DESC'],
+                ['id', 'ASC'],
+            ]})
                 .then((result) => { return (result);  })
                 .catch((err) => { throw (err);  // apiErrorHandler(err, req, res, "Fetch All Users failed."); 
             });
@@ -81,11 +85,9 @@ export default class UserRoutes {
         
     }
 
-    async createUser(req: Request, res: Response, next: NextFunction) {
-        // console.log('create user');
+    async createUser(req: any, res: Response, next: NextFunction) {
         // Xử lý data 
         try {
-            // console.log("Data post +++");
             let data_post = req['value']['body'];
             const user_report_to = req['value']['body'].report_to;
             let obj_report: any;
@@ -93,7 +95,7 @@ export default class UserRoutes {
             data_post.report_to_list = "";
             data_post.report_to = "";
             data_post.report_to_username = "";
-            // console.log(data_post);
+            data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
             user_insert = await User.create(data_post)
                             .then((result) => { 
                                 return (result); })
@@ -103,8 +105,6 @@ export default class UserRoutes {
                                     .then((result) => {  return result; })
                                     .catch((err) => { throw err; });
             //Update user_report_to
-            // console.log("obj_report +++++");
-            // console.log(obj_report);
             let report_to_list = '';
             if(obj_report.report_to_list != ''){
                 report_to_list = obj_report.report_to_list + ".";
@@ -117,20 +117,24 @@ export default class UserRoutes {
             }
 
             //Update report_to and report_to_list
-            // console.log("data_put +++++");
-            // console.log(data_put);
-            
+            // Call API Tú
+            const api = new BaseApi();
+            let res_api: any;
+            const datapost = {
+                "UserId" : user_insert.id,
+                "ReportTo" : data_put.report_to,
+                "ReportToList" : data_put.report_to_list
+            }
+            res_api = await api.apiPost(req.token, 'http://13.250.129.169:3001/api/users', JSON.stringify(datapost));
+            console.log(res_api);
+            //End call
+
             user_insert = await User.update(data_put, { where: { username: user_insert.username } })
                 .then((result) => { return (result); })
                 .catch((err) => { throw err; });
 
-            // console.log("user_insert +++++");
-            // console.log(user_insert);
-                
             await res.json(user_insert);
-            // console.log("======");
            
-                
             
         } catch (error) {
             console.log(error);
@@ -158,7 +162,7 @@ export default class UserRoutes {
                     // role: "5ab1cfbb3a2e5604a5314fb5"
                 }
                 const user_support = new UserSupport();
-                const resObj = await user_support.createUserObj(obj);
+                const resObj = await user_support.createUserObj(obj, req);
                 arrResUsers[index] = resObj;
                 console.log(resObj);
                 // const element = await array[index];
@@ -185,13 +189,14 @@ export default class UserRoutes {
 
     updateBadgeLevel(req: Request, res: Response, next: NextFunction) {
         try {
-            const data_put = req['value']['body'];
+            const data_put = req.body;
             console.log(data_put);
             User.update(data_put, { where: { username: req.params.username } })
                 .then((result) => { res.json(result); })
                 .catch((err) => { throw err; });
         } catch (error) {
-            apiErrorHandler(error, req, res, `updation of User ${req.params.username}  failed.`); 
+            console.log(error);
+            apiErrorHandler(error, req, res, `updation Information User ${req.params.username}  failed.`); 
         }
         
     }
@@ -257,7 +262,7 @@ export default class UserRoutes {
     }
 
     updateDeactive (req: Request, res: Response, next: NextFunction){
-        const data_put = {status: -1};
+        const data_put = {status: 2};
         User.update(data_put, { where: { username: req.params.username } })
             .then((result) => { res.json(result); })
             .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `Deactive ${req.params.username}  failed.`); });
@@ -294,7 +299,7 @@ export class UserSupport {
     constructor() { 
         
     }
-    async createUserObj(data_post) {
+    async createUserObj(data_post, req: any) {
         // console.log('create user');
         // Xử lý data 
         try {
@@ -305,6 +310,8 @@ export class UserSupport {
             data_post.report_to_list = "";
             data_post.report_to = "";
             data_post.report_to_username = "";
+            data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
+
             // console.log(data_post);
             user_insert = await User.create(data_post)
                             .then((result) => { 
@@ -328,9 +335,19 @@ export class UserSupport {
                 report_to_username: obj_report.username
             }
 
+            // Call API Tú
+            const api = new BaseApi();
+            let res_api: any;
+            const datapost = {
+                "UserId" : user_insert.id,
+                "ReportTo" : data_put.report_to,
+                "ReportToList" : data_put.report_to_list
+            }
+            res_api = await api.apiPost(req.token, 'http://13.250.129.169:3001/api/users', JSON.stringify(datapost));
+            console.log(res_api);
+            //End call
+
             //Update report_to and report_to_list
-            // console.log("data_put +++++");
-            // console.log(data_put);
             
             user_insert = await User.update(data_put, { where: { username: user_insert.username } })
                 .then((result) => { return (result); })

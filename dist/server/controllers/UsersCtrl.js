@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var errorHandler_1 = require("../handlers/errorHandler");
+var api_1 = require("../handlers/api");
 var User_1 = require("../models/User");
 var phoneValidator = require('joi-phone-validator');
 var UserRoutes = /** @class */ (function () {
@@ -130,7 +131,10 @@ var UserRoutes = /** @class */ (function () {
                             offset = 20;
                         _a = result;
                         _b = "data";
-                        return [4 /*yield*/, User_1.User.findAll({ offset: offset, limit: req.params.size, order: 'oauth_user."updatedAt"' })
+                        return [4 /*yield*/, User_1.User.findAll({ offset: offset, limit: req.params.size, order: [
+                                    ['updatedAt', 'DESC'],
+                                    ['id', 'ASC'],
+                                ] })
                                 .then(function (result) { return (result); })
                                 .catch(function (err) {
                                 throw (err); // apiErrorHandler(err, req, res, "Fetch All Users failed."); 
@@ -160,11 +164,11 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.createUser = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var data_post, user_report_to, obj_report, user_insert, report_to_list, data_put, error_3;
+            var data_post, user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
+                        _a.trys.push([0, 6, , 7]);
                         data_post = req['value']['body'];
                         user_report_to = req['value']['body'].report_to;
                         obj_report = void 0;
@@ -172,13 +176,13 @@ var UserRoutes = /** @class */ (function () {
                         data_post.report_to_list = "";
                         data_post.report_to = "";
                         data_post.report_to_username = "";
+                        data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
                         return [4 /*yield*/, User_1.User.create(data_post)
                                 .then(function (result) {
                                 return (result);
                             })
                                 .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Creation of User failed." + JSON.stringify(err)); })];
                     case 1:
-                        // console.log(data_post);
                         user_insert = _a.sent();
                         return [4 /*yield*/, User_1.User.findOne({ where: { username: user_report_to } })
                                 .then(function (result) { return result; })
@@ -196,28 +200,33 @@ var UserRoutes = /** @class */ (function () {
                             report_to_list: report_to_list + user_insert.id,
                             report_to_username: obj_report.username
                         };
+                        api = new api_1.BaseApi();
+                        res_api = void 0;
+                        datapost = {
+                            "UserId": user_insert.id,
+                            "ReportTo": data_put.report_to,
+                            "ReportToList": data_put.report_to_list
+                        };
+                        return [4 /*yield*/, api.apiPost(req.token, 'http://13.250.129.169:3001/api/users', JSON.stringify(datapost))];
+                    case 3:
+                        res_api = _a.sent();
+                        console.log(res_api);
                         return [4 /*yield*/, User_1.User.update(data_put, { where: { username: user_insert.username } })
                                 .then(function (result) { return (result); })
                                 .catch(function (err) { throw err; })];
-                    case 3:
-                        //Update report_to and report_to_list
-                        // console.log("data_put +++++");
-                        // console.log(data_put);
-                        user_insert = _a.sent();
-                        // console.log("user_insert +++++");
-                        // console.log(user_insert);
-                        return [4 /*yield*/, res.json(user_insert)];
                     case 4:
-                        // console.log("user_insert +++++");
-                        // console.log(user_insert);
-                        _a.sent();
-                        return [3 /*break*/, 6];
+                        //End call
+                        user_insert = _a.sent();
+                        return [4 /*yield*/, res.json(user_insert)];
                     case 5:
+                        _a.sent();
+                        return [3 /*break*/, 7];
+                    case 6:
                         error_3 = _a.sent();
                         console.log(error_3);
                         errorHandler_1.apiErrorHandler(error_3, req, res, "Get of Role failed.");
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -248,7 +257,7 @@ var UserRoutes = /** @class */ (function () {
                             // role: "5ab1cfbb3a2e5604a5314fb5"
                         };
                         user_support = new UserSupport();
-                        return [4 /*yield*/, user_support.createUserObj(obj)];
+                        return [4 /*yield*/, user_support.createUserObj(obj, req)];
                     case 2:
                         resObj = _a.sent();
                         arrResUsers[index] = resObj;
@@ -274,14 +283,15 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.updateBadgeLevel = function (req, res, next) {
         try {
-            var data_put = req['value']['body'];
+            var data_put = req.body;
             console.log(data_put);
             User_1.User.update(data_put, { where: { username: req.params.username } })
                 .then(function (result) { res.json(result); })
                 .catch(function (err) { throw err; });
         }
         catch (error) {
-            errorHandler_1.apiErrorHandler(error, req, res, "updation of User " + req.params.username + "  failed.");
+            console.log(error);
+            errorHandler_1.apiErrorHandler(error, req, res, "updation Information User " + req.params.username + "  failed.");
         }
     };
     UserRoutes.prototype.updatePhoneUser = function (req, res, next) {
@@ -336,7 +346,7 @@ var UserRoutes = /** @class */ (function () {
             .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.id + "  failed."); });
     };
     UserRoutes.prototype.updateDeactive = function (req, res, next) {
-        var data_put = { status: -1 };
+        var data_put = { status: 2 };
         User_1.User.update(data_put, { where: { username: req.params.username } })
             .then(function (result) { res.json(result); })
             .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Deactive " + req.params.username + "  failed."); });
@@ -367,19 +377,20 @@ exports.default = UserRoutes;
 var UserSupport = /** @class */ (function () {
     function UserSupport() {
     }
-    UserSupport.prototype.createUserObj = function (data_post) {
+    UserSupport.prototype.createUserObj = function (data_post, req) {
         return __awaiter(this, void 0, void 0, function () {
-            var user_report_to, obj_report, user_insert, report_to_list, data_put, error_5;
+            var user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
+                        _a.trys.push([0, 5, , 6]);
                         user_report_to = data_post.report_to;
                         obj_report = void 0;
                         user_insert = void 0;
                         data_post.report_to_list = "";
                         data_post.report_to = "";
                         data_post.report_to_username = "";
+                        data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
                         return [4 /*yield*/, User_1.User.create(data_post)
                                 .then(function (result) {
                                 return (result);
@@ -404,13 +415,23 @@ var UserSupport = /** @class */ (function () {
                             report_to_list: report_to_list + user_insert.id,
                             report_to_username: obj_report.username
                         };
+                        api = new api_1.BaseApi();
+                        res_api = void 0;
+                        datapost = {
+                            "UserId": user_insert.id,
+                            "ReportTo": data_put.report_to,
+                            "ReportToList": data_put.report_to_list
+                        };
+                        return [4 /*yield*/, api.apiPost(req.token, 'http://13.250.129.169:3001/api/users', JSON.stringify(datapost))];
+                    case 3:
+                        res_api = _a.sent();
+                        console.log(res_api);
                         return [4 /*yield*/, User_1.User.update(data_put, { where: { username: user_insert.username } })
                                 .then(function (result) { return (result); })
                                 .catch(function (err) { throw err; })];
-                    case 3:
+                    case 4:
+                        //End call
                         //Update report_to and report_to_list
-                        // console.log("data_put +++++");
-                        // console.log(data_put);
                         user_insert = _a.sent();
                         // console.log("user_insert +++++");
                         // console.log(user_insert);
@@ -420,13 +441,13 @@ var UserSupport = /** @class */ (function () {
                         return [2 /*return*/, data_post
                             // console.log("======");
                         ];
-                    case 4:
+                    case 5:
                         error_5 = _a.sent();
                         console.log(error_5);
                         data_post.resultInsert = "Thất bại";
                         data_post.style = "red";
                         return [2 /*return*/, data_post];
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });

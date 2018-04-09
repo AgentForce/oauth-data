@@ -21,14 +21,14 @@ var Routes = /** @class */ (function () {
         app.route("/api/users/getInfo/:username").get(this.tokenValidator.checkToken(), this.usersCtrl.getUserById);
         app.route("/api/users/:page/:size").get(this.tokenValidator.checkToken(), this.usersCtrl.getAllUsers);
         app.route("/api/users/:page/:size").post(this.tokenValidator.checkToken(), this.usersCtrl.postQueryUsers);
+        app.route("/api/users/deactive/:username").patch(this.tokenValidator.checkToken(), this.usersCtrl.updateDeactive);
+        app.route("/api/users/active/:username").patch(this.tokenValidator.checkToken(), this.usersCtrl.updateActive);
+        app.route("/api/users/badgeLevel/:username").patch(this.tokenValidator.checkToken(), this.usersCtrl.updateBadgeLevel);
         app.route("/api/users/updatePhone/:username").patch(this.tokenValidator.checkToken(), this.userValidator.validateBody(userValidator_1.userPhoneSchema), this.usersCtrl.updatePhoneUser);
         app.route("/api/users/updatePass/:username").patch(this.tokenValidator.checkToken(), this.usersCtrl.updatePassUser);
         app.route("/api/users/resetPass/:username").patch(this.tokenValidator.checkToken(), this.usersCtrl.resetPassUser);
         app.route("/api/users/add").post(this.tokenValidator.checkToken(), this.userValidator.validateBody(userValidator_1.userSchema), this.usersCtrl.createUser);
         app.route("/api/users/addList").post(this.tokenValidator.checkToken(), this.usersCtrl.createUsers);
-        app.route("/api/users/deactive/:username").patch(this.tokenValidator.checkToken(), this.usersCtrl.updateDeactive);
-        app.route("/api/users/active/:username").patch(this.tokenValidator.checkToken(), this.usersCtrl.updateActive);
-        app.route("/api/users/badgeLevel/:username").patch(this.tokenValidator.checkToken(), this.usersCtrl.updateBadgeLevel);
         app.route("/api/roles/obj/:id").get(this.rolesCtrl.getObjRoles);
         app.route("/api/roles/:page/:size").get(this.rolesCtrl.getAllRolesPage);
         app.route("/api/roles").get(this.rolesCtrl.getAllRoles);
