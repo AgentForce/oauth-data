@@ -85,7 +85,7 @@ export default class RoleRoutes {
             let arr_insert = [];
             console.log(req.body);
             await req.body.forEach(element => {
-                const obj = {id_role: req.params.id_role, id_scope: element.id, name_scope: element.name_scope, scope: element.scope};
+                const obj = {id_role: req.params.id_role, id_scope: element.id, name_scope: element.name_scope, scope: element.scope, name_role: element.name_role, role: element.role};
                 arr_insert.push(obj);
             });
             await RoleScope.bulkCreate(arr_insert).then(rolescopes => {

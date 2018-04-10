@@ -148,7 +148,7 @@ var RoleRoutes = /** @class */ (function () {
                         arr_insert_1 = [];
                         console.log(req.body);
                         return [4 /*yield*/, req.body.forEach(function (element) {
-                                var obj = { id_role: req.params.id_role, id_scope: element.id, name_scope: element.name_scope, scope: element.scope };
+                                var obj = { id_role: req.params.id_role, id_scope: element.id, name_scope: element.name_scope, scope: element.scope, name_role: element.name_role, role: element.role };
                                 arr_insert_1.push(obj);
                             })];
                     case 1:
