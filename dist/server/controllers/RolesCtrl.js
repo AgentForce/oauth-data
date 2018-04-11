@@ -146,12 +146,13 @@ var RoleRoutes = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
                         arr_insert_1 = [];
-                        console.log(req.body);
+                        // console.log(req.body);
                         return [4 /*yield*/, req.body.forEach(function (element) {
                                 var obj = { id_role: req.params.id_role, id_scope: element.id, name_scope: element.name_scope, scope: element.scope, name_role: element.name_role, role: element.role };
                                 arr_insert_1.push(obj);
                             })];
                     case 1:
+                        // console.log(req.body);
                         _a.sent();
                         return [4 /*yield*/, RoleScope_1.RoleScope.bulkCreate(arr_insert_1).then(function (rolescopes) {
                                 var res_return = {
@@ -183,7 +184,6 @@ var RoleRoutes = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
-                        console.log("getObjRoles");
                         role = void 0;
                         return [4 /*yield*/, Role_1.Role.findOne({ where: { id: req.params.id } })
                                 .then(function (result) { return (result); })
@@ -191,15 +191,11 @@ var RoleRoutes = /** @class */ (function () {
                     case 1:
                         role = _a.sent();
                         permissions = void 0;
-                        console.log("role =======");
-                        console.log(role);
                         return [4 /*yield*/, RoleScope_1.RoleScope.findAll({ where: { id_role: req.params.id } })
                                 .then(function (result) { return (result); })
                                 .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Fetch All Scopes failed."); })];
                     case 2:
                         permissions = _a.sent();
-                        console.log(permissions);
-                        console.log("role permissions");
                         result = {
                             role: role,
                             permissions: permissions
@@ -209,7 +205,6 @@ var RoleRoutes = /** @class */ (function () {
                     case 3:
                         // console.log(result);
                         _a.sent();
-                        console.log("return kqqqqq");
                         return [3 /*break*/, 5];
                     case 4:
                         error_3 = _a.sent();

@@ -54,7 +54,7 @@ export default class UserRoutes {
     }
 
     async getAllUsers(req: Request, res: Response, next: NextFunction) {
-        console.log('vao')
+        // console.log('vao')
         let result = {
             data: [],
             msg: "",
@@ -126,7 +126,7 @@ export default class UserRoutes {
                 "ReportToList" : data_put.report_to_list
             }
             res_api = await api.apiPost(req.token, 'http://13.250.129.169:3001/api/users', JSON.stringify(datapost));
-            console.log(res_api);
+            // console.log(res_api);
             //End call
 
             user_insert = await User.update(data_put, { where: { username: user_insert.username } })
@@ -151,20 +151,24 @@ export default class UserRoutes {
             for (let index = 0; index < arrUsers.length; index++) {
                 const element = arrUsers[index];
                 let obj = {
-                    username: element.username.trim(),
+                    username: element.user_name.trim(),
                     phone: element.phone.trim(),
                     level: parseInt(element.level.trim()),
-                    code_level: element.label.trim(),
-                    fullName: element.fullname.trim(),
+                    code_level: element.code_level.trim(),
+                    fullName: element.full_name.trim(),
                     identity_card: element.cmnd.trim(),
-                    report_to: element.reportto.trim(),
-                    resource_ids: "SOP_API"
-                    // role: "5ab1cfbb3a2e5604a5314fb5"
+                    report_to: element.report_to.trim(),
+                    resource_ids: "SOP_API",
+                    scope: element.roles.trim(),
+                    zone: element.zone.trim(),
+                    badge: element.baged.trim(),
+                    expirence: element.expirence.trim(),
+                    onboard_date: element.onboard_date.trim()
                 }
                 const user_support = new UserSupport();
                 const resObj = await user_support.createUserObj(obj, req);
                 arrResUsers[index] = resObj;
-                console.log(resObj);
+                // console.log(resObj);
                 // const element = await array[index];
                 
             }
@@ -190,7 +194,7 @@ export default class UserRoutes {
     updateBadgeLevel(req: Request, res: Response, next: NextFunction) {
         try {
             const data_put = req.body;
-            console.log(data_put);
+            // console.log(data_put);
             User.update(data_put, { where: { username: req.params.username } })
                 .then((result) => { res.json(result); })
                 .catch((err) => { throw err; });
@@ -310,7 +314,7 @@ export class UserSupport {
             data_post.report_to_list = "";
             data_post.report_to = "";
             data_post.report_to_username = "";
-            data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
+            // data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
 
             // console.log(data_post);
             user_insert = await User.create(data_post)
@@ -344,7 +348,7 @@ export class UserSupport {
                 "ReportToList" : data_put.report_to_list
             }
             res_api = await api.apiPost(req.token, 'http://13.250.129.169:3001/api/users', JSON.stringify(datapost));
-            console.log(res_api);
+            // console.log(res_api);
             //End call
 
             //Update report_to and report_to_list
@@ -357,7 +361,7 @@ export class UserSupport {
             // console.log(user_insert);
             data_post.resultInsert = "Thành công";
             data_post.style = "white";
-            console.log(data_post);
+            // console.log(data_post);
             return data_post
             // console.log("======");
         

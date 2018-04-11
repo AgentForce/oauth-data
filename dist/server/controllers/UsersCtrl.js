@@ -112,7 +112,6 @@ var UserRoutes = /** @class */ (function () {
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        console.log('vao');
                         result = {
                             data: [],
                             msg: "",
@@ -210,11 +209,11 @@ var UserRoutes = /** @class */ (function () {
                         return [4 /*yield*/, api.apiPost(req.token, 'http://13.250.129.169:3001/api/users', JSON.stringify(datapost))];
                     case 3:
                         res_api = _a.sent();
-                        console.log(res_api);
                         return [4 /*yield*/, User_1.User.update(data_put, { where: { username: user_insert.username } })
                                 .then(function (result) { return (result); })
                                 .catch(function (err) { throw err; })];
                     case 4:
+                        // console.log(res_api);
                         //End call
                         user_insert = _a.sent();
                         return [4 /*yield*/, res.json(user_insert)];
@@ -246,22 +245,25 @@ var UserRoutes = /** @class */ (function () {
                         if (!(index < arrUsers.length)) return [3 /*break*/, 4];
                         element = arrUsers[index];
                         obj = {
-                            username: element.username.trim(),
+                            username: element.user_name.trim(),
                             phone: element.phone.trim(),
                             level: parseInt(element.level.trim()),
-                            code_level: element.label.trim(),
-                            fullName: element.fullname.trim(),
+                            code_level: element.code_level.trim(),
+                            fullName: element.full_name.trim(),
                             identity_card: element.cmnd.trim(),
-                            report_to: element.reportto.trim(),
-                            resource_ids: "SOP_API"
-                            // role: "5ab1cfbb3a2e5604a5314fb5"
+                            report_to: element.report_to.trim(),
+                            resource_ids: "SOP_API",
+                            scope: element.roles.trim(),
+                            zone: element.zone.trim(),
+                            badge: element.baged.trim(),
+                            expirence: element.expirence.trim(),
+                            onboard_date: element.onboard_date.trim()
                         };
                         user_support = new UserSupport();
                         return [4 /*yield*/, user_support.createUserObj(obj, req)];
                     case 2:
                         resObj = _a.sent();
                         arrResUsers[index] = resObj;
-                        console.log(resObj);
                         _a.label = 3;
                     case 3:
                         index++;
@@ -284,7 +286,7 @@ var UserRoutes = /** @class */ (function () {
     UserRoutes.prototype.updateBadgeLevel = function (req, res, next) {
         try {
             var data_put = req.body;
-            console.log(data_put);
+            // console.log(data_put);
             User_1.User.update(data_put, { where: { username: req.params.username } })
                 .then(function (result) { res.json(result); })
                 .catch(function (err) { throw err; });
@@ -390,13 +392,13 @@ var UserSupport = /** @class */ (function () {
                         data_post.report_to_list = "";
                         data_post.report_to = "";
                         data_post.report_to_username = "";
-                        data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
                         return [4 /*yield*/, User_1.User.create(data_post)
                                 .then(function (result) {
                                 return (result);
                             })
                                 .catch(function (err) { throw err; })];
                     case 1:
+                        // data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
                         // console.log(data_post);
                         user_insert = _a.sent();
                         return [4 /*yield*/, User_1.User.findOne({ where: { username: user_report_to } })
@@ -425,11 +427,11 @@ var UserSupport = /** @class */ (function () {
                         return [4 /*yield*/, api.apiPost(req.token, 'http://13.250.129.169:3001/api/users', JSON.stringify(datapost))];
                     case 3:
                         res_api = _a.sent();
-                        console.log(res_api);
                         return [4 /*yield*/, User_1.User.update(data_put, { where: { username: user_insert.username } })
                                 .then(function (result) { return (result); })
                                 .catch(function (err) { throw err; })];
                     case 4:
+                        // console.log(res_api);
                         //End call
                         //Update report_to and report_to_list
                         user_insert = _a.sent();
@@ -437,7 +439,7 @@ var UserSupport = /** @class */ (function () {
                         // console.log(user_insert);
                         data_post.resultInsert = "Thành công";
                         data_post.style = "white";
-                        console.log(data_post);
+                        // console.log(data_post);
                         return [2 /*return*/, data_post
                             // console.log("======");
                         ];

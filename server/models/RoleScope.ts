@@ -7,6 +7,7 @@ export const RoleScope = sequelize.define("oauth_role_scope", {
     id_scope: ORM.STRING,
     name_scope: ORM.STRING,
     name_role: ORM.STRING,
+    role: ORM.STRING,
     scope: ORM.STRING,
     createdAt: ORM.DATE,
     updatedAt: ORM.DATE
