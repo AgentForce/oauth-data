@@ -113,7 +113,7 @@ export default class UserRoutes {
             data_put = {
                 report_to : obj_report.id,
                 report_to_list:  report_to_list + user_insert.id,
-                report_to_username: obj_report.username
+                report_to_username: obj_report.fullName + " - " + obj_report.username 
             }
 
             //Update report_to and report_to_list
@@ -336,7 +336,7 @@ export class UserSupport {
             data_put = {
                 report_to : obj_report.id,
                 report_to_list:  report_to_list + user_insert.id,
-                report_to_username: obj_report.username
+                report_to_username: obj_report.fullName + " - " + obj_report.username 
             }
 
             // Call API Tú

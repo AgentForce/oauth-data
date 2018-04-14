@@ -197,7 +197,7 @@ var UserRoutes = /** @class */ (function () {
                         data_put = {
                             report_to: obj_report.id,
                             report_to_list: report_to_list + user_insert.id,
-                            report_to_username: obj_report.username
+                            report_to_username: obj_report.fullName + " - " + obj_report.username
                         };
                         api = new api_1.BaseApi();
                         res_api = void 0;
@@ -415,7 +415,7 @@ var UserSupport = /** @class */ (function () {
                         data_put = {
                             report_to: obj_report.id,
                             report_to_list: report_to_list + user_insert.id,
-                            report_to_username: obj_report.username
+                            report_to_username: obj_report.fullName + " - " + obj_report.username
                         };
                         api = new api_1.BaseApi();
                         res_api = void 0;
