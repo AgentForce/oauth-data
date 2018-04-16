@@ -1,4 +1,0 @@
-127.0.0.1 - - [23/Mar/2018:10:06:56 +0000] "GET / HTTP/1.1" 404 139 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36"
-127.0.0.1 - - [23/Mar/2018:10:06:57 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:5200/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36"
-127.0.0.1 - - [23/Mar/2018:10:07:33 +0000] "GET //api/roles HTTP/1.1" 404 149 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36"
-127.0.0.1 - - [23/Mar/2018:10:07:38 +0000] "GET /api/roles HTTP/1.1" 400 28 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36"

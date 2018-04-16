@@ -4,6 +4,9 @@ import { apiErrorHandler } from '../handlers/errorHandler';
 import { BaseApi } from "../handlers/api";
 import { User } from '../models/User';
 import * as Joi from 'joi';
+import { sequelize } from "./../db/db";
+import * as lodash from "lodash";
+
 var phoneValidator = require('joi-phone-validator');
 
 export default class UserRoutes {
@@ -84,7 +87,34 @@ export default class UserRoutes {
         }
         
     }
+    async getDashboard(req: any, res: Response, next: NextFunction) {
+        let resQ: any;
+        resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
+        { replacements: { }, type: sequelize.QueryTypes.SELECT }
+        ).then(projects => {
+            return projects;
+        })
+        const abc = await lodash.groupBy(resQ, "report_to");
+        let arr = await lodash.values(abc);
+        arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
+        /*for (let index = arr.length - 1 ; index >= 0; index--) {
+            const element = arr[index];
+            // console.log(element);
+            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
+            if(index_find >= 0){
+                resQ[index_find].child = JSON.stringify(arr[index]);
+            }
 
+        }
+        console.log(resQ)
+        console.log("=======")
+        const abc2 = await lodash.groupBy(resQ, "report_to");
+        let arr2 = await lodash.values(abc2);
+        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
+        console.log("===eeeee====")*/
+        await res.json(arr);
+
+    }
     async createUser(req: any, res: Response, next: NextFunction) {
         // Xử lý data 
         try {
@@ -122,6 +152,7 @@ export default class UserRoutes {
             let res_api: any;
             const datapost = {
                 "UserId" : user_insert.id,
+                "LevelCode" : parseInt(user_insert.code_level),
                 "ReportTo" : data_put.report_to,
                 "ReportToList" : data_put.report_to_list
             }
@@ -161,9 +192,10 @@ export default class UserRoutes {
                     resource_ids: "SOP_API",
                     scope: element.roles.trim(),
                     zone: element.zone.trim(),
-                    badge: element.baged.trim(),
+                    badge: element.badge.trim(),
                     expirence: element.expirence.trim(),
-                    onboard_date: element.onboard_date.trim()
+                    onboard_date: element.onboard_date.trim(),
+                    manager_badge: element.manager_badge.trim()
                 }
                 const user_support = new UserSupport();
                 const resObj = await user_support.createUserObj(obj, req);
@@ -344,6 +376,7 @@ export class UserSupport {
             let res_api: any;
             const datapost = {
                 "UserId" : user_insert.id,
+                "LevelCode" : parseInt(user_insert.code_level),
                 "ReportTo" : data_put.report_to,
                 "ReportToList" : data_put.report_to_list
             }

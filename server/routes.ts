@@ -52,5 +52,7 @@ export default class Routes {
         app.route("/api/permissions/update/:id").patch( this.permissionsCtrl.patchUpdatePermissions);
         app.route("/api/permissions/link/:id_role").put( this.permissionsCtrl.putLinkPermissions);
 
+        app.route("/api/dashboard").get( this.usersCtrl.getDashboard);
+
     }
 }

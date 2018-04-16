@@ -41,6 +41,7 @@ var Routes = /** @class */ (function () {
         app.route("/api/permissions").post(this.scopeValidator.validateBody(scopeValidator_1.scopeSchema), this.permissionsCtrl.postCreatePermissions);
         app.route("/api/permissions/update/:id").patch(this.permissionsCtrl.patchUpdatePermissions);
         app.route("/api/permissions/link/:id_role").put(this.permissionsCtrl.putLinkPermissions);
+        app.route("/api/dashboard").get(this.usersCtrl.getDashboard);
     }
     return Routes;
 }());

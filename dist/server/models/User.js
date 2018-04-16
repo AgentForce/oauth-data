@@ -28,6 +28,7 @@ exports.User = db_1.sequelize.define("oauth_user", {
     report_to_list: ORM.STRING,
     report_to_username: ORM.STRING,
     identity_card: ORM.STRING,
-    onboard_date: ORM.STRING
+    onboard_date: ORM.STRING,
+    manager_badge: ORM.STRING
 });
 //# sourceMappingURL=User.js.map
