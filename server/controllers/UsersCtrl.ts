@@ -152,7 +152,7 @@ export default class UserRoutes {
             let res_api: any;
             const datapost = {
                 "UserId" : user_insert.id,
-                "LevelCode" : parseInt(user_insert.code_level),
+                "LevelCode" : parseInt(user_insert.level),
                 "ReportTo" : data_put.report_to,
                 "ReportToList" : data_put.report_to_list
             }
@@ -376,7 +376,7 @@ export class UserSupport {
             let res_api: any;
             const datapost = {
                 "UserId" : user_insert.id,
-                "LevelCode" : parseInt(user_insert.code_level),
+                "LevelCode" : parseInt(user_insert.level),
                 "ReportTo" : data_put.report_to,
                 "ReportToList" : data_put.report_to_list
             }
