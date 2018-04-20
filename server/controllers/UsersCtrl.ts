@@ -89,14 +89,15 @@ export default class UserRoutes {
     }
     async getDashboard(req: any, res: Response, next: NextFunction) {
         let resQ: any;
-        resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
+        // resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
+        resQ = await sequelize.query("select * from oauth_users where report_to = '' ",
         { replacements: { }, type: sequelize.QueryTypes.SELECT }
         ).then(projects => {
             return projects;
         })
-        const abc = await lodash.groupBy(resQ, "report_to");
-        let arr = await lodash.values(abc);
-        arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
+        // const abc = await lodash.groupBy(resQ, "report_to");
+        // let arr = await lodash.values(abc);
+        // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
         /*for (let index = arr.length - 1 ; index >= 0; index--) {
             const element = arr[index];
             // console.log(element);
@@ -112,7 +113,17 @@ export default class UserRoutes {
         let arr2 = await lodash.values(abc2);
         arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
         console.log("===eeeee====")*/
-        await res.json(arr);
+        await res.json(resQ);
+
+    }
+    async getReportToID(req: any, res: Response, next: NextFunction) {
+        let resQ: any;
+        resQ = await sequelize.query("select * from oauth_users where report_to = '" + req.params.id + "'",
+        { replacements: { }, type: sequelize.QueryTypes.SELECT }
+        ).then(projects => {
+            return projects;
+        })
+        await res.json(resQ);
 
     }
     async createUser(req: any, res: Response, next: NextFunction) {

@@ -45,8 +45,9 @@ export default class Server {
           d.getFullYear(),
           ('0' + (d.getMonth() + 1)).slice(-2),
           ('0' + d.getDate()).slice(-2)
-        ].join('-');        
+        ].join('-');    
         const accessLogStream: WriteStream = fs.createWriteStream(path.join(__dirname, "./logs/" + date + "-access.log"), { flags: "a" });
+        
         app.use(morgan("combined", { stream: accessLogStream }));
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());

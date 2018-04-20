@@ -39,7 +39,6 @@ var errorHandler_1 = require("../handlers/errorHandler");
 var api_1 = require("../handlers/api");
 var User_1 = require("../models/User");
 var db_1 = require("./../db/db");
-var lodash = require("lodash");
 var phoneValidator = require('joi-phone-validator');
 var UserRoutes = /** @class */ (function () {
     function UserRoutes() {
@@ -165,55 +164,90 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.getDashboard = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var resQ, abc, arr;
+            var resQ;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where '56' @> report_to_list ", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                    case 0: return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where report_to = '' ", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                            return projects;
+                        })
+                        // const abc = await lodash.groupBy(resQ, "report_to");
+                        // let arr = await lodash.values(abc);
+                        // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
+                        /*for (let index = arr.length - 1 ; index >= 0; index--) {
+                            const element = arr[index];
+                            // console.log(element);
+                            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
+                            if(index_find >= 0){
+                                resQ[index_find].child = JSON.stringify(arr[index]);
+                            }
+                
+                        }
+                        console.log(resQ)
+                        console.log("=======")
+                        const abc2 = await lodash.groupBy(resQ, "report_to");
+                        let arr2 = await lodash.values(abc2);
+                        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
+                        console.log("===eeeee====")*/
+                    ];
+                    case 1:
+                        // resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
+                        resQ = _a.sent();
+                        // const abc = await lodash.groupBy(resQ, "report_to");
+                        // let arr = await lodash.values(abc);
+                        // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
+                        /*for (let index = arr.length - 1 ; index >= 0; index--) {
+                            const element = arr[index];
+                            // console.log(element);
+                            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
+                            if(index_find >= 0){
+                                resQ[index_find].child = JSON.stringify(arr[index]);
+                            }
+                
+                        }
+                        console.log(resQ)
+                        console.log("=======")
+                        const abc2 = await lodash.groupBy(resQ, "report_to");
+                        let arr2 = await lodash.values(abc2);
+                        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
+                        console.log("===eeeee====")*/
+                        return [4 /*yield*/, res.json(resQ)];
+                    case 2:
+                        // const abc = await lodash.groupBy(resQ, "report_to");
+                        // let arr = await lodash.values(abc);
+                        // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
+                        /*for (let index = arr.length - 1 ; index >= 0; index--) {
+                            const element = arr[index];
+                            // console.log(element);
+                            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
+                            if(index_find >= 0){
+                                resQ[index_find].child = JSON.stringify(arr[index]);
+                            }
+                
+                        }
+                        console.log(resQ)
+                        console.log("=======")
+                        const abc2 = await lodash.groupBy(resQ, "report_to");
+                        let arr2 = await lodash.values(abc2);
+                        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
+                        console.log("===eeeee====")*/
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserRoutes.prototype.getReportToID = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var resQ;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where report_to = '" + req.params.id + "'", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
                             return projects;
                         })];
                     case 1:
                         resQ = _a.sent();
-                        return [4 /*yield*/, lodash.groupBy(resQ, "report_to")];
+                        return [4 /*yield*/, res.json(resQ)];
                     case 2:
-                        abc = _a.sent();
-                        return [4 /*yield*/, lodash.values(abc)];
-                    case 3:
-                        arr = _a.sent();
-                        return [4 /*yield*/, lodash.orderBy(arr, 'report_to_list', 'asc')];
-                    case 4:
-                        arr = _a.sent();
-                        /*for (let index = arr.length - 1 ; index >= 0; index--) {
-                            const element = arr[index];
-                            // console.log(element);
-                            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
-                            if(index_find >= 0){
-                                resQ[index_find].child = JSON.stringify(arr[index]);
-                            }
-                
-                        }
-                        console.log(resQ)
-                        console.log("=======")
-                        const abc2 = await lodash.groupBy(resQ, "report_to");
-                        let arr2 = await lodash.values(abc2);
-                        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
-                        console.log("===eeeee====")*/
-                        return [4 /*yield*/, res.json(arr)];
-                    case 5:
-                        /*for (let index = arr.length - 1 ; index >= 0; index--) {
-                            const element = arr[index];
-                            // console.log(element);
-                            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
-                            if(index_find >= 0){
-                                resQ[index_find].child = JSON.stringify(arr[index]);
-                            }
-                
-                        }
-                        console.log(resQ)
-                        console.log("=======")
-                        const abc2 = await lodash.groupBy(resQ, "report_to");
-                        let arr2 = await lodash.values(abc2);
-                        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
-                        console.log("===eeeee====")*/
                         _a.sent();
                         return [2 /*return*/];
                 }
