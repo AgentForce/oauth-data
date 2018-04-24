@@ -164,72 +164,68 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.getDashboard = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var resQ;
+            var resQ, countSum, countSumActive, countMonth, countActiveMonth, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where report_to = '' ", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
                             return projects;
                         })
-                        // const abc = await lodash.groupBy(resQ, "report_to");
-                        // let arr = await lodash.values(abc);
-                        // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
-                        /*for (let index = arr.length - 1 ; index >= 0; index--) {
-                            const element = arr[index];
-                            // console.log(element);
-                            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
-                            if(index_find >= 0){
-                                resQ[index_find].child = JSON.stringify(arr[index]);
-                            }
-                
-                        }
-                        console.log(resQ)
-                        console.log("=======")
-                        const abc2 = await lodash.groupBy(resQ, "report_to");
-                        let arr2 = await lodash.values(abc2);
-                        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
-                        console.log("===eeeee====")*/
+                        // Count status sum
                     ];
                     case 1:
                         // resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
                         resQ = _a.sent();
-                        // const abc = await lodash.groupBy(resQ, "report_to");
-                        // let arr = await lodash.values(abc);
-                        // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
-                        /*for (let index = arr.length - 1 ; index >= 0; index--) {
-                            const element = arr[index];
-                            // console.log(element);
-                            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
-                            if(index_find >= 0){
-                                resQ[index_find].child = JSON.stringify(arr[index]);
-                            }
-                
-                        }
-                        console.log(resQ)
-                        console.log("=======")
-                        const abc2 = await lodash.groupBy(resQ, "report_to");
-                        let arr2 = await lodash.values(abc2);
-                        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
-                        console.log("===eeeee====")*/
-                        return [4 /*yield*/, res.json(resQ)];
+                        return [4 /*yield*/, User_1.User.count({ where: { resource_ids: "SOP_API" } })
+                                .then(function (result) { return result; })
+                                .catch(function (err) { throw err; })];
                     case 2:
-                        // const abc = await lodash.groupBy(resQ, "report_to");
-                        // let arr = await lodash.values(abc);
-                        // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
-                        /*for (let index = arr.length - 1 ; index >= 0; index--) {
-                            const element = arr[index];
-                            // console.log(element);
-                            const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
-                            if(index_find >= 0){
-                                resQ[index_find].child = JSON.stringify(arr[index]);
+                        countSum = _a.sent();
+                        return [4 /*yield*/, User_1.User.count({ where: { resource_ids: "SOP_API", status: 1 } })
+                                .then(function (result) { return result; })
+                                .catch(function (err) { throw err; })];
+                    case 3:
+                        countSumActive = _a.sent();
+                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and " + '"createdAt"' + " LIKE '2018-04%'", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                                return projects.length;
+                            })];
+                    case 4:
+                        countMonth = _a.sent();
+                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and status = 1 and " + '"createdAt"' + " LIKE '2018-04%'", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                                return projects.length;
+                            })
+                            // console.log(countSum);
+                            // console.log(countSumActive);
+                            // console.log(countActiveMonth);
+                            // const abc = await lodash.groupBy(resQ, "report_to");
+                            // let arr = await lodash.values(abc);
+                            // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
+                            /*for (let index = arr.length - 1 ; index >= 0; index--) {
+                                const element = arr[index];
+                                // console.log(element);
+                                const index_find = lodash.findIndex(resQ, function(o: any) { return o.report_to == element[0].report_to; });
+                                if(index_find >= 0){
+                                    resQ[index_find].child = JSON.stringify(arr[index]);
+                                }
+                    
                             }
-                
-                        }
-                        console.log(resQ)
-                        console.log("=======")
-                        const abc2 = await lodash.groupBy(resQ, "report_to");
-                        let arr2 = await lodash.values(abc2);
-                        arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
-                        console.log("===eeeee====")*/
+                            console.log(resQ)
+                            console.log("=======")
+                            const abc2 = await lodash.groupBy(resQ, "report_to");
+                            let arr2 = await lodash.values(abc2);
+                            arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
+                            console.log("===eeeee====")*/
+                        ];
+                    case 5:
+                        countActiveMonth = _a.sent();
+                        data = {
+                            resQ: resQ,
+                            countSum: countSum,
+                            countSumActive: countSumActive,
+                            countMonth: countMonth,
+                            countActiveMonth: countActiveMonth
+                        };
+                        return [4 /*yield*/, res.json(data)];
+                    case 6:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -261,8 +257,8 @@ var UserRoutes = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        data_post = req['value']['body'];
-                        user_report_to = req['value']['body'].report_to;
+                        data_post = req.body;
+                        user_report_to = req.body.report_to;
                         obj_report = void 0;
                         user_insert = void 0;
                         data_post.report_to_list = "";
@@ -296,6 +292,7 @@ var UserRoutes = /** @class */ (function () {
                         res_api = void 0;
                         datapost = {
                             "UserId": user_insert.id,
+                            "FullName": user_insert.fullName,
                             "LevelCode": parseInt(user_insert.level),
                             "ReportTo": data_put.report_to,
                             "ReportToList": data_put.report_to_list
@@ -516,6 +513,7 @@ var UserSupport = /** @class */ (function () {
                         res_api = void 0;
                         datapost = {
                             "UserId": user_insert.id,
+                            "FullName": user_insert.fullName,
                             "LevelCode": parseInt(user_insert.level),
                             "ReportTo": data_put.report_to,
                             "ReportToList": data_put.report_to_list

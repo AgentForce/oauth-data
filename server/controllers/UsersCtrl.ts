@@ -95,6 +95,31 @@ export default class UserRoutes {
         ).then(projects => {
             return projects;
         })
+        // Count status sum
+        let countSum: Number;
+        countSum = await User.count({where: { resource_ids: "SOP_API" }})
+                                    .then((result) => {  return result; })
+                                    .catch((err) => { throw err; });
+
+        let countSumActive: Number;
+        countSumActive = await User.count({where: { resource_ids: "SOP_API", status: 1 }})
+                                    .then((result) => {  return result; })
+                                    .catch((err) => { throw err; });
+        const countMonth = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and "+  '"createdAt"' + " LIKE '2018-04%'",
+        { replacements: { }, type: sequelize.QueryTypes.SELECT }
+        ).then(projects => {
+            return projects.length;
+        })
+
+        const countActiveMonth = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and status = 1 and "+  '"createdAt"' + " LIKE '2018-04%'",
+        { replacements: { }, type: sequelize.QueryTypes.SELECT }
+        ).then(projects => {
+            return projects.length;
+        })
+        
+        // console.log(countSum);
+        // console.log(countSumActive);
+        // console.log(countActiveMonth);
         // const abc = await lodash.groupBy(resQ, "report_to");
         // let arr = await lodash.values(abc);
         // arr = await lodash.orderBy(arr, 'report_to_list', 'asc');
@@ -113,7 +138,14 @@ export default class UserRoutes {
         let arr2 = await lodash.values(abc2);
         arr2 = await lodash.orderBy(arr2, 'report_to_list', 'asc');
         console.log("===eeeee====")*/
-        await res.json(resQ);
+        const data = {
+            resQ : resQ,
+            countSum: countSum,
+            countSumActive: countSumActive,
+            countMonth: countMonth,
+            countActiveMonth: countActiveMonth
+        }
+        await res.json(data);
 
     }
     async getReportToID(req: any, res: Response, next: NextFunction) {
@@ -129,8 +161,8 @@ export default class UserRoutes {
     async createUser(req: any, res: Response, next: NextFunction) {
         // Xử lý data 
         try {
-            let data_post = req['value']['body'];
-            const user_report_to = req['value']['body'].report_to;
+            let data_post = req.body;
+            const user_report_to = req.body.report_to;
             let obj_report: any;
             let user_insert: any;
             data_post.report_to_list = "";
@@ -163,6 +195,7 @@ export default class UserRoutes {
             let res_api: any;
             const datapost = {
                 "UserId" : user_insert.id,
+                "FullName": user_insert.fullName,
                 "LevelCode" : parseInt(user_insert.level),
                 "ReportTo" : data_put.report_to,
                 "ReportToList" : data_put.report_to_list
@@ -387,6 +420,7 @@ export class UserSupport {
             let res_api: any;
             const datapost = {
                 "UserId" : user_insert.id,
+                "FullName": user_insert.fullName,
                 "LevelCode" : parseInt(user_insert.level),
                 "ReportTo" : data_put.report_to,
                 "ReportToList" : data_put.report_to_list
