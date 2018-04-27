@@ -277,6 +277,7 @@ export class BaseApi {
 
         });
     }
+
     public apiPost(token: string, api_name: string, datapost: Object) {
         //  const res_api = api.apiPost(token, 'https://dcmwdevtest01.easycredit.vn', datapost.Password, datapost);
         return new Promise(function (fulfill, reject) {
@@ -354,6 +355,86 @@ export class BaseApi {
         });
     }
 
+    public apiPut(token: string, api_name: string, datapost: Object) {
+        //  const res_api = api.apiPost(token, 'https://dcmwdevtest01.easycredit.vn', datapost.Password, datapost);
+        return new Promise(function (fulfill, reject) {
+            const options = {
+                connection: {
+                    rejectUnauthorized: false,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                },
+                requestConfig: {
+                    timeout: 60000,
+                    noDelay: true,
+                    keepAlive: true,
+                    keepAliveDelay: 1000
+                },
+                responseConfig: {
+                    timeout: 300000
+                }
+            };
+            const client = new Client(options);
+            // Data test
+            // request and response additional configuration
+
+            const args = {
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Accept": "application/json",
+                },
+                data: datapost,
+                requestConfig: {
+                    timeout: 10000, // request timeout in milliseconds
+                    noDelay: true, // Enable/disable the Nagle algorithm
+                    keepAlive: true, // Enable/disable keep-alive functionalityidle socket.
+                    keepAliveDelay: 1000 // and optionally set the initial delay before the first keepalive probe is sent
+                },
+                responseConfig: {
+                    timeout: 1000 // response timeout
+                }
+            };
+            // console.log(args);
+            // console.log(api_name);
+            const req = client.put(api_name, args, function (data: Object, response: any) {                // parsed response body as js object
+                const decoder = new StringDecoder("utf8");
+                // console.log("========");
+                // console.log(JSON.stringify(data));
+                // console.log(response.statusCode);
+                if (response.statusCode >= 200 && response.statusCode < 300)
+                    fulfill(data);
+                else {
+                    console.log(decoder.write(data));
+                    reject("Server response statusCode: " + response.statusCode + " Data : " + decoder.write(data));
+
+                }
+
+            });
+
+            req.on("requestTimeout", function (req: any) {
+                console.log("requestTimeout");
+                reject(" - request has expired :");
+                req.abort();
+            });
+
+            req.on("responseTimeout", function (res: any) {
+                console.log("responseTimeout");
+                reject(" - response has expired :");
+            });
+
+            // it's usefull to handle request errors to avoid, for example, socket hang up errors on request timeouts
+            req.on("error", function (err: any) {
+                console.log("error");
+                // Xóa data tenant
+                reject(err);
+
+            });
+
+
+        });
+    }
+
     public apiPatch(token: string, api_name: string, datapost: Object) {
         //  const res_api = api.apiPost(token, 'https://dcmwdevtest01.easycredit.vn', datapost.Password, datapost);
         return new Promise(function (fulfill, reject) {
@@ -394,8 +475,8 @@ export class BaseApi {
                     timeout: 1000 // response timeout
                 }
             };
-            console.log(args);
-            console.log(api_name);
+            // console.log(args);
+            // console.log(api_name);
             const req = client.post(api_name, args, function (data: Object, response: any) {                // parsed response body as js object
                 const decoder = new StringDecoder("utf8");
                 console.log(decoder.write(data));
@@ -409,13 +490,13 @@ export class BaseApi {
             });
 
             req.on("requestTimeout", function (req: any) {
-                console.log("requestTimeout");
+                // console.log("requestTimeout");
                 reject(" - request has expired :");
                 req.abort();
             });
 
             req.on("responseTimeout", function (res: any) {
-                console.log("responseTimeout");
+                // console.log("responseTimeout");
                 reject(" - response has expired :");
             });
 

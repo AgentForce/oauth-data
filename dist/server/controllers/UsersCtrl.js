@@ -394,6 +394,51 @@ var UserRoutes = /** @class */ (function () {
             .then(function (result) { res.json(result); })
             .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
     };
+    UserRoutes.prototype.changeReportTo = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data_put, obj_des, obj_src, resQ;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        data_put = req.body;
+                        return [4 /*yield*/, User_1.User.findOne({ where: { username: data_put.des } })
+                                .then(function (result) { return result; })
+                                .catch(function (err) { throw err; })];
+                    case 1:
+                        obj_des = _a.sent();
+                        return [4 /*yield*/, User_1.User.findOne({ where: { username: data_put.src } })
+                                .then(function (result) { return result; })
+                                .catch(function (err) { throw err; })];
+                    case 2:
+                        obj_src = _a.sent();
+                        return [4 /*yield*/, db_1.sequelize.query("update oauth_users set report_to_list = '" + obj_des.report_to_list + "' || subpath(report_to_list, nlevel('" + obj_src.report_to_list + "')-1) where report_to_list <@ '" + obj_src.report_to_list + "'", { replacements: {}, type: db_1.sequelize.QueryTypes.UPDATE }).then(function (projects) {
+                                // console.log(projects);
+                                db_1.sequelize.query("update oauth_users set report_to = '" + obj_des.id + "', report_to_username = '" + obj_des.fullName + " - " + obj_des.username + "' where id = '" + obj_src.id + "'", { replacements: {}, type: db_1.sequelize.QueryTypes.UPDATE }).then(function (projects) {
+                                    // Call API Tú
+                                    var api = new api_1.BaseApi();
+                                    var res_api;
+                                    var datapost = {
+                                        "UserIdDes": obj_des.id,
+                                        "UserIdSrc": obj_src.id,
+                                        "IsMoveAll": true
+                                    };
+                                    // console.log(datapost);
+                                    res_api = api.apiPut(req.token, 'http://13.250.129.169:3001/api/users/moveuser', JSON.stringify(datapost));
+                                    // console.log(res_api);
+                                    //End call
+                                    res.json(res_api);
+                                });
+                            })];
+                    case 3:
+                        // resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
+                        // update tree set path = DESTINATION_PATH || subpath(path, nlevel(SOURCE_PATH)-1) where path <@ SOURCE_PATH;
+                        // resQ = await sequelize.query("update oauth_users set report_to_list = '56.810' || subpath(report_to_list, nlevel('56.809.813')-1) where report_to_list <@ '56.809.813'",
+                        resQ = _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserRoutes.prototype.updatePassUser = function (req, res, next) {
         var data_put = { password: req.body.password };
         User_1.User.update(data_put, { where: { username: req.params.username } })

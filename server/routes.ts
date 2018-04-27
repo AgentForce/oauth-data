@@ -37,6 +37,7 @@ export default class Routes {
 
         app.route("/api/users/add").post(this.tokenValidator.checkToken(), this.usersCtrl.createUser);
         app.route("/api/users/addList").post( this.tokenValidator.checkToken(), this.usersCtrl.createUsers);
+        app.route("/api/users/changeReportTo").patch( this.usersCtrl.changeReportTo);
 
 
         app.route("/api/roles/obj/:id").get( this.rolesCtrl.getObjRoles);

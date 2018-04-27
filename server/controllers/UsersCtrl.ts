@@ -289,6 +289,53 @@ export default class UserRoutes {
             .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
     }
 
+    async changeReportTo(req: any, res: Response, next: NextFunction) {
+        
+        const data_put = req.body;
+        // console.log(data_put);
+        // data_put.des = "mum3";
+        // data_put.src = "test2504";
+        let obj_des: any;
+        obj_des = await User.findOne({where: { username: data_put.des }})
+                                    .then((result) => {  return result; })
+                                    .catch((err) => { throw err; });
+        let obj_src: any;
+        obj_src = await User.findOne({where: { username: data_put.src }})
+                                    .then((result) => {  return result; })
+                                    .catch((err) => { throw err; });
+
+        let resQ: any;
+        // resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
+        // update tree set path = DESTINATION_PATH || subpath(path, nlevel(SOURCE_PATH)-1) where path <@ SOURCE_PATH;
+        // resQ = await sequelize.query("update oauth_users set report_to_list = '56.810' || subpath(report_to_list, nlevel('56.809.813')-1) where report_to_list <@ '56.809.813'",
+        resQ = await sequelize.query("update oauth_users set report_to_list = '" + obj_des.report_to_list + "' || subpath(report_to_list, nlevel('" + obj_src.report_to_list + "')-1) where report_to_list <@ '" + obj_src.report_to_list + "'",
+        { replacements: { }, type: sequelize.QueryTypes.UPDATE }
+        ).then(projects => {
+            // console.log(projects);
+            sequelize.query("update oauth_users set report_to = '" + obj_des.id + "', report_to_username = '" + obj_des.fullName + " - " + obj_des.username  + "' where id = '" + obj_src.id + "'",
+            { replacements: { }, type: sequelize.QueryTypes.UPDATE }
+            ).then(projects => {
+                // Call API Tú
+                const api = new BaseApi();
+                let res_api: any;
+                const datapost = {
+                    "UserIdDes" : obj_des.id,
+                    "UserIdSrc": obj_src.id,
+                    "IsMoveAll" : true
+                }
+                // console.log(datapost);
+                res_api =  api.apiPut(req.token, 'http://13.250.129.169:3001/api/users/moveuser', JSON.stringify(datapost));
+                // console.log(res_api);
+                //End call
+
+                res.json(res_api);
+                
+            })
+            
+        })
+        
+    }
+
     updatePassUser(req: Request, res: Response, next: NextFunction) {
         
         const data_put = {password: req.body.password};

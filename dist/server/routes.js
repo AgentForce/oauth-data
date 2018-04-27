@@ -30,6 +30,7 @@ var Routes = /** @class */ (function () {
         // app.route("/api/users/add").post(this.tokenValidator.checkToken(), this.userValidator.validateBody(userSchema), this.usersCtrl.createUser);
         app.route("/api/users/add").post(this.tokenValidator.checkToken(), this.usersCtrl.createUser);
         app.route("/api/users/addList").post(this.tokenValidator.checkToken(), this.usersCtrl.createUsers);
+        app.route("/api/users/changeReportTo").patch(this.usersCtrl.changeReportTo);
         app.route("/api/roles/obj/:id").get(this.rolesCtrl.getObjRoles);
         app.route("/api/roles/:page/:size").get(this.rolesCtrl.getAllRolesPage);
         app.route("/api/roles").get(this.rolesCtrl.getAllRoles);

@@ -308,6 +308,76 @@ var BaseApi = /** @class */ (function () {
             });
         });
     };
+    BaseApi.prototype.apiPut = function (token, api_name, datapost) {
+        //  const res_api = api.apiPost(token, 'https://dcmwdevtest01.easycredit.vn', datapost.Password, datapost);
+        return new Promise(function (fulfill, reject) {
+            var options = {
+                connection: {
+                    rejectUnauthorized: false,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                },
+                requestConfig: {
+                    timeout: 60000,
+                    noDelay: true,
+                    keepAlive: true,
+                    keepAliveDelay: 1000
+                },
+                responseConfig: {
+                    timeout: 300000
+                }
+            };
+            var client = new Client(options);
+            // Data test
+            // request and response additional configuration
+            var args = {
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Accept": "application/json",
+                },
+                data: datapost,
+                requestConfig: {
+                    timeout: 10000,
+                    noDelay: true,
+                    keepAlive: true,
+                    keepAliveDelay: 1000 // and optionally set the initial delay before the first keepalive probe is sent
+                },
+                responseConfig: {
+                    timeout: 1000 // response timeout
+                }
+            };
+            // console.log(args);
+            // console.log(api_name);
+            var req = client.put(api_name, args, function (data, response) {
+                var decoder = new StringDecoder("utf8");
+                // console.log("========");
+                // console.log(JSON.stringify(data));
+                // console.log(response.statusCode);
+                if (response.statusCode >= 200 && response.statusCode < 300)
+                    fulfill(data);
+                else {
+                    console.log(decoder.write(data));
+                    reject("Server response statusCode: " + response.statusCode + " Data : " + decoder.write(data));
+                }
+            });
+            req.on("requestTimeout", function (req) {
+                console.log("requestTimeout");
+                reject(" - request has expired :");
+                req.abort();
+            });
+            req.on("responseTimeout", function (res) {
+                console.log("responseTimeout");
+                reject(" - response has expired :");
+            });
+            // it's usefull to handle request errors to avoid, for example, socket hang up errors on request timeouts
+            req.on("error", function (err) {
+                console.log("error");
+                // Xóa data tenant
+                reject(err);
+            });
+        });
+    };
     BaseApi.prototype.apiPatch = function (token, api_name, datapost) {
         //  const res_api = api.apiPost(token, 'https://dcmwdevtest01.easycredit.vn', datapost.Password, datapost);
         return new Promise(function (fulfill, reject) {
@@ -347,8 +417,8 @@ var BaseApi = /** @class */ (function () {
                     timeout: 1000 // response timeout
                 }
             };
-            console.log(args);
-            console.log(api_name);
+            // console.log(args);
+            // console.log(api_name);
             var req = client.post(api_name, args, function (data, response) {
                 var decoder = new StringDecoder("utf8");
                 console.log(decoder.write(data));
@@ -360,12 +430,12 @@ var BaseApi = /** @class */ (function () {
                 }
             });
             req.on("requestTimeout", function (req) {
-                console.log("requestTimeout");
+                // console.log("requestTimeout");
                 reject(" - request has expired :");
                 req.abort();
             });
             req.on("responseTimeout", function (res) {
-                console.log("responseTimeout");
+                // console.log("responseTimeout");
                 reject(" - response has expired :");
             });
             // it's usefull to handle request errors to avoid, for example, socket hang up errors on request timeouts
