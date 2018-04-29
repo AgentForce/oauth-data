@@ -6,6 +6,7 @@ var TokenValidator = /** @class */ (function () {
     }
     TokenValidator.prototype.checkToken = function () {
         return function (req, res, next) {
+            next();
             var client = new Client();
             // Data test
             // request and response additional configuration

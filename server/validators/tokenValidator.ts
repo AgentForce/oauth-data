@@ -7,6 +7,7 @@ export class TokenValidator {
 
     checkToken() {
         return (req: any, res: Response, next: NextFunction) => {
+            next();
             const client = new Client();
             // Data test
             // request and response additional configuration
