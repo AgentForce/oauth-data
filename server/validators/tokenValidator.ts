@@ -7,8 +7,9 @@ export class TokenValidator {
 
     checkToken() {
         return (req: any, res: Response, next: NextFunction) => {
+            req['token'] = 'result.value';
             next();
-            const client = new Client();
+            /* const client = new Client();
             // Data test
             // request and response additional configuration
             var datapost = {};
@@ -38,7 +39,7 @@ export class TokenValidator {
                     return res.status(400).json('không có token ' + req.token);  
                 }
 
-            })
+            })*/
         
             
             //return res.status(400).json('không có token' + req.token);  
