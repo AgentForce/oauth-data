@@ -264,13 +264,13 @@ var UserRoutes = /** @class */ (function () {
                         data_post.report_to_list = "";
                         data_post.report_to = "";
                         data_post.report_to_username = "";
-                        data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
                         return [4 /*yield*/, User_1.User.create(data_post)
                                 .then(function (result) {
                                 return (result);
                             })
                                 .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "Creation of User failed." + JSON.stringify(err)); })];
                     case 1:
+                        // data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
                         user_insert = _a.sent();
                         return [4 /*yield*/, User_1.User.findOne({ where: { username: user_report_to } })
                                 .then(function (result) { return result; })

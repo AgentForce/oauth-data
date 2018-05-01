@@ -168,7 +168,7 @@ export default class UserRoutes {
             data_post.report_to_list = "";
             data_post.report_to = "";
             data_post.report_to_username = "";
-            data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
+            // data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
             user_insert = await User.create(data_post)
                             .then((result) => { 
                                 return (result); })
