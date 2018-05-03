@@ -372,8 +372,8 @@ export default class UserRoutes {
 
     changePassUser(req: Request, res: Response, next: NextFunction) {
         
-        const data_put = {password: "uK8748", status: 0};
-        User.update(data_put, { where: { username: req.params.username } })
+        const data_put = req.body; // {password: "uK8748", status: 0}; old_pass and password
+        User.update(data_put, { where: { username: req.params.username, password: data_put.old_pass} })
             .then((result) => {
                 const res_return = {
                     "success": true,
