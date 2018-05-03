@@ -33,6 +33,7 @@ export default class Routes {
         app.route("/api/users/updatePhone/:username").patch(this.tokenValidator.checkToken() ,this.userValidator.validateBody(userPhoneSchema), this.usersCtrl.updatePhoneUser);
         app.route("/api/users/updatePass/:username").patch(this.tokenValidator.checkToken() ,this.usersCtrl.updatePassUser);
         app.route("/api/users/resetPass/:username").patch(this.tokenValidator.checkToken() ,this.usersCtrl.resetPassUser);
+        app.route("/api/users/changePass/:username").patch(this.usersCtrl.changePassUser);
         // app.route("/api/users/add").post(this.tokenValidator.checkToken(), this.userValidator.validateBody(userSchema), this.usersCtrl.createUser);
 
         app.route("/api/users/add").post(this.tokenValidator.checkToken(), this.usersCtrl.createUser);

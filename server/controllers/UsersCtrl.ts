@@ -370,6 +370,23 @@ export default class UserRoutes {
             .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
     }
 
+    changePassUser(req: Request, res: Response, next: NextFunction) {
+        
+        const data_put = {password: "uK8748", status: 0};
+        User.update(data_put, { where: { username: req.params.username } })
+            .then((result) => {
+                const res_return = {
+                    "success": true,
+                    "result": result
+                }
+                if( result[0] < 1 ){
+                    res_return.success = false;
+                }
+                res.json(res_return);
+             })
+            .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+    }
+
     updateStatusOTPUser(req: Request, res: Response, next: NextFunction) {
         const data_put = {status: 1};
         User.update(data_put, { where: { username: req.params.username } })

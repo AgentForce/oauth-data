@@ -469,6 +469,21 @@ var UserRoutes = /** @class */ (function () {
         })
             .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
     };
+    UserRoutes.prototype.changePassUser = function (req, res, next) {
+        var data_put = { password: "uK8748", status: 0 };
+        User_1.User.update(data_put, { where: { username: req.params.username } })
+            .then(function (result) {
+            var res_return = {
+                "success": true,
+                "result": result
+            };
+            if (result[0] < 1) {
+                res_return.success = false;
+            }
+            res.json(res_return);
+        })
+            .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+    };
     UserRoutes.prototype.updateStatusOTPUser = function (req, res, next) {
         var data_put = { status: 1 };
         User_1.User.update(data_put, { where: { username: req.params.username } })
