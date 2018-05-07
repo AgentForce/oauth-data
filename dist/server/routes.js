@@ -46,6 +46,7 @@ var Routes = /** @class */ (function () {
         app.route("/api/permissions/link/:id_role").put(this.permissionsCtrl.putLinkPermissions);
         app.route("/api/dashboard/:id").get(this.usersCtrl.getDashboard);
         app.route("/api/reportto/:id").get(this.usersCtrl.getReportToID);
+        app.route("/api/export").post(this.usersCtrl.postExport);
     }
     return Routes;
 }());

@@ -162,6 +162,63 @@ var UserRoutes = /** @class */ (function () {
             });
         });
     };
+    UserRoutes.prototype.postExport = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var resQ, dataExport, obj_report, where_add, data, error_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 7, , 8]);
+                        resQ = void 0;
+                        console.log(req.body);
+                        dataExport = void 0;
+                        obj_report = void 0;
+                        if (!(req.body.type === 'level')) return [3 /*break*/, 3];
+                        return [4 /*yield*/, User_1.User.findOne({ where: { username: req.body.key } })
+                                .then(function (result) { return result; })
+                                .catch(function (err) { throw err; })];
+                    case 1:
+                        // TH là level
+                        // Find user theo username
+                        obj_report = _a.sent();
+                        return [4 /*yield*/, db_1.sequelize.query("SELECT * FROM oauth_users WHERE report_to_list <@ '" + obj_report.report_to_list + "'", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                                return projects;
+                            })
+                            // 
+                        ];
+                    case 2:
+                        dataExport = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        where_add = "";
+                        if (req.body.type === 'active')
+                            where_add = " and status = 1";
+                        else if (req.body.type === 'deactive')
+                            where_add = " and status = 0";
+                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' " + where_add + " and  " + '"createdAt"' + " < '" + req.body.to + "'::date AND " + '"createdAt" ' + ">= '" + req.body.from + "'::date", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                                return projects;
+                            })];
+                    case 4:
+                        dataExport = _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        data = {
+                            resQ: dataExport,
+                            obj_report: obj_report
+                        };
+                        return [4 /*yield*/, res.json(data)];
+                    case 6:
+                        _a.sent();
+                        return [3 /*break*/, 8];
+                    case 7:
+                        error_3 = _a.sent();
+                        res.json([]);
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserRoutes.prototype.getDashboard = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var resQ, countSum, countSumActive, countMonth, countActiveMonth, data;
@@ -185,12 +242,12 @@ var UserRoutes = /** @class */ (function () {
                                 .catch(function (err) { throw err; })];
                     case 3:
                         countSumActive = _a.sent();
-                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and " + '"createdAt"' + " LIKE '2018-04%'", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and " + '"createdAt"' + " < '2018-05-01'::date AND " + '"createdAt" ' + ">= '2018-04-01'::date", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
                                 return projects.length;
                             })];
                     case 4:
                         countMonth = _a.sent();
-                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and status = 1 and " + '"createdAt"' + " LIKE '2018-04%'", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and status = 1 and  " + '"createdAt"' + " < '2018-05-01'::date AND " + '"createdAt" ' + ">= '2018-04-01'::date", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
                                 return projects.length;
                             })
                             // console.log(countSum);
@@ -252,7 +309,7 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.createUser = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var data_post, user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_3;
+            var data_post, user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -312,9 +369,9 @@ var UserRoutes = /** @class */ (function () {
                         _a.sent();
                         return [3 /*break*/, 7];
                     case 6:
-                        error_3 = _a.sent();
-                        console.log(error_3);
-                        errorHandler_1.apiErrorHandler(error_3, req, res, "Get of Role failed.");
+                        error_4 = _a.sent();
+                        console.log(error_4);
+                        errorHandler_1.apiErrorHandler(error_4, req, res, "Get of Role failed.");
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }
@@ -323,7 +380,7 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.createUsers = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var arrUsers, arrResUsers, index, element, obj, user_support, resObj, error_4;
+            var arrUsers, arrResUsers, index, element, obj, user_support, resObj, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -365,10 +422,10 @@ var UserRoutes = /** @class */ (function () {
                         _a.sent();
                         return [3 /*break*/, 7];
                     case 6:
-                        error_4 = _a.sent();
-                        console.log(error_4);
+                        error_5 = _a.sent();
+                        console.log(error_5);
                         console.log("+_++_++++___");
-                        errorHandler_1.apiErrorHandler(error_4, req, res, "Insert of Users failed.");
+                        errorHandler_1.apiErrorHandler(error_5, req, res, "Insert of Users failed.");
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }
@@ -533,7 +590,7 @@ var UserSupport = /** @class */ (function () {
     }
     UserSupport.prototype.createUserObj = function (data_post, req) {
         return __awaiter(this, void 0, void 0, function () {
-            var user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_5;
+            var user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -598,8 +655,8 @@ var UserSupport = /** @class */ (function () {
                             // console.log("======");
                         ];
                     case 5:
-                        error_5 = _a.sent();
-                        console.log(error_5);
+                        error_6 = _a.sent();
+                        console.log(error_6);
                         data_post.resultInsert = "Thất bại";
                         data_post.style = "red";
                         return [2 /*return*/, data_post];

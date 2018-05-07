@@ -10,7 +10,7 @@ const app: Application = express();
 const server: Server = new Server(app);
 const port: number = process.env.PORT;//nconf.get("http:port");
 // const port = 5200;
-console.log(process.env.PORT);
+// console.log(process.env.PORT);
 app.listen(port, "0.0.0.0", function (err: any) {
     if (err) return err;
     console.info(`Server running on : http://localhost:${port}`);

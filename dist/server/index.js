@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+console.log("abc");
 var bodyParser = require("body-parser");
 var morgan = require("morgan");
 var fs = require("fs");
@@ -23,7 +24,10 @@ var Server = /** @class */ (function () {
         // Connect to MongoDB
         var mongoUrl = process.env.MONGOLAB_URI;
         mongoose.Promise = bluebird;
-        mongoose.connect(mongoUrl, {}).then(function () { }).catch(function (err) {
+        mongoose.connect(mongoUrl, {}).then(function () {
+            console.log("connect DB");
+            /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ 
+        }).catch(function (err) {
             console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
             // process.exit();
         });

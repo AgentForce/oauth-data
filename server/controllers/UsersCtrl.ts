@@ -11,10 +11,6 @@ var phoneValidator = require('joi-phone-validator');
 
 export default class UserRoutes {
 
-    constructor() { 
-        
-    }
-    
     async postQueryUsers(req: Request, res: Response, next: NextFunction) {
         // console.log('vao')
         let result = {
@@ -87,6 +83,52 @@ export default class UserRoutes {
         }
         
     }
+
+    async postExport(req: any, res: Response, next: NextFunction) {
+        try {
+            let resQ: any;
+            console.log(req.body);
+            let dataExport: any;
+            let obj_report: any;
+            if(req.body.type === 'level'){
+                // TH là level
+                // Find user theo username
+                
+                obj_report = await User.findOne({where: { username: req.body.key }})
+                                        .then((result) => {  return result; })
+                                        .catch((err) => { throw err; });
+                dataExport = await sequelize.query("SELECT * FROM oauth_users WHERE report_to_list <@ '" + obj_report.report_to_list + "'",
+                { replacements: { }, type: sequelize.QueryTypes.SELECT }
+                ).then(projects => {
+                    return projects;
+                })
+                // 
+            } else {
+                let where_add = "";
+                if(req.body.type === 'active')
+                    where_add = " and status = 1";
+                else if(req.body.type === 'deactive')
+                    where_add = " and status = 0";
+                dataExport = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' " + where_add + " and  " +  '"createdAt"' + " < '" + req.body.to + "'::date AND " +  '"createdAt" ' + ">= '" + req.body.from + "'::date",
+                { replacements: { }, type: sequelize.QueryTypes.SELECT }
+                ).then(projects => {
+                    return projects;
+                })
+            }
+            
+            const data = {
+                resQ : dataExport,
+                obj_report: obj_report
+            }
+            await res.json(data);
+        } catch (error) {
+            res.json([]);
+        }
+        
+       
+
+    }
+
     async getDashboard(req: any, res: Response, next: NextFunction) {
         let resQ: any;
         // resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
@@ -105,13 +147,13 @@ export default class UserRoutes {
         countSumActive = await User.count({where: { resource_ids: "SOP_API", status: 1 }})
                                     .then((result) => {  return result; })
                                     .catch((err) => { throw err; });
-        const countMonth = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and "+  '"createdAt"' + " LIKE '2018-04%'",
+        const countMonth = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and " +  '"createdAt"' + " < '2018-05-01'::date AND " +  '"createdAt" ' + ">= '2018-04-01'::date",
         { replacements: { }, type: sequelize.QueryTypes.SELECT }
         ).then(projects => {
             return projects.length;
         })
 
-        const countActiveMonth = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and status = 1 and "+  '"createdAt"' + " LIKE '2018-04%'",
+        const countActiveMonth = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and status = 1 and  " +  '"createdAt"' + " < '2018-05-01'::date AND " +  '"createdAt" ' + ">= '2018-04-01'::date",
         { replacements: { }, type: sequelize.QueryTypes.SELECT }
         ).then(projects => {
             return projects.length;

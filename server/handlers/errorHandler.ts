@@ -31,7 +31,7 @@ export function unCoughtErrorHandler(
 // winston.error("Lỗi");
 // winston.info("Info");
 // winston.warn("cảnh ebáo");
-winston.error("lỗi");
+// winston.error("lỗi");
 export function apiErrorHandler(err: any, req: Request, res: Response, message: string) {
     try {
         const error: object = { "Message": message, "Request": "req", "Stack": JSON.stringify(err) };
