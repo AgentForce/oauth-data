@@ -39,6 +39,7 @@ var errorHandler_1 = require("../handlers/errorHandler");
 var api_1 = require("../handlers/api");
 var User_1 = require("../models/User");
 var db_1 = require("./../db/db");
+var moment = require("moment");
 var phoneValidator = require('joi-phone-validator');
 var UserRoutes = /** @class */ (function () {
     function UserRoutes() {
@@ -219,6 +220,54 @@ var UserRoutes = /** @class */ (function () {
             });
         });
     };
+    UserRoutes.prototype.getRemind = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, offset, _a, _b, _c, error_4;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        result = {
+                            data: [],
+                            msg: "",
+                            pagenumber: req.params.page,
+                            pagesize: req.params.size,
+                            total: 0
+                        };
+                        _d.label = 1;
+                    case 1:
+                        _d.trys.push([1, 5, , 6]);
+                        offset = 0;
+                        if (req.params.page > 1) {
+                            offset = (req.params.page - 1) * req.params.size;
+                        }
+                        if (req.params.size < 0)
+                            offset = 20;
+                        _a = result;
+                        _b = "data";
+                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and  " + '"remind_date"' + " < '" + moment().format('YYYY-MM-DD') + "'::date LIMIT " + req.params.size + " OFFSET " + offset, { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                                return projects;
+                            })];
+                    case 2:
+                        _a[_b] = _d.sent();
+                        _c = result;
+                        return [4 /*yield*/, db_1.sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and  " + '"remind_date"' + " < '" + moment().format('YYYY-MM-DD') + "'::date", { replacements: {}, type: db_1.sequelize.QueryTypes.SELECT }).then(function (projects) {
+                                return projects.length;
+                            })];
+                    case 3:
+                        _c.total = _d.sent();
+                        return [4 /*yield*/, res.json(result)];
+                    case 4:
+                        _d.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
+                        error_4 = _d.sent();
+                        errorHandler_1.apiErrorHandler(error_4, req, res, "Get all User failed. ");
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserRoutes.prototype.getDashboard = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var resQ, countSum, countSumActive, countMonth, countActiveMonth, data;
@@ -309,7 +358,7 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.createUser = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var data_post, user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_4;
+            var data_post, user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -321,6 +370,8 @@ var UserRoutes = /** @class */ (function () {
                         data_post.report_to_list = "";
                         data_post.report_to = "";
                         data_post.report_to_username = "";
+                        // Add remind_date
+                        data_post.remind_date = moment().add(11, 'M');
                         return [4 /*yield*/, User_1.User.create(data_post)
                                 .then(function (result) {
                                 return (result);
@@ -369,9 +420,9 @@ var UserRoutes = /** @class */ (function () {
                         _a.sent();
                         return [3 /*break*/, 7];
                     case 6:
-                        error_4 = _a.sent();
-                        console.log(error_4);
-                        errorHandler_1.apiErrorHandler(error_4, req, res, "Get of Role failed.");
+                        error_5 = _a.sent();
+                        console.log(error_5);
+                        errorHandler_1.apiErrorHandler(error_5, req, res, "Get of Role failed.");
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }
@@ -380,7 +431,7 @@ var UserRoutes = /** @class */ (function () {
     };
     UserRoutes.prototype.createUsers = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var arrUsers, arrResUsers, index, element, obj, user_support, resObj, error_5;
+            var arrUsers, arrResUsers, index, element, obj, user_support, resObj, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -422,10 +473,10 @@ var UserRoutes = /** @class */ (function () {
                         _a.sent();
                         return [3 /*break*/, 7];
                     case 6:
-                        error_5 = _a.sent();
-                        console.log(error_5);
+                        error_6 = _a.sent();
+                        console.log(error_6);
                         console.log("+_++_++++___");
-                        errorHandler_1.apiErrorHandler(error_5, req, res, "Insert of Users failed.");
+                        errorHandler_1.apiErrorHandler(error_6, req, res, "Insert of Users failed.");
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }
@@ -590,7 +641,7 @@ var UserSupport = /** @class */ (function () {
     }
     UserSupport.prototype.createUserObj = function (data_post, req) {
         return __awaiter(this, void 0, void 0, function () {
-            var user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_6;
+            var user_report_to, obj_report, user_insert, report_to_list, data_put, api, res_api, datapost, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -601,6 +652,8 @@ var UserSupport = /** @class */ (function () {
                         data_post.report_to_list = "";
                         data_post.report_to = "";
                         data_post.report_to_username = "";
+                        // Add remind_date
+                        data_post.remind_date = moment().add(11, 'M');
                         return [4 /*yield*/, User_1.User.create(data_post)
                                 .then(function (result) {
                                 return (result);
@@ -655,8 +708,8 @@ var UserSupport = /** @class */ (function () {
                             // console.log("======");
                         ];
                     case 5:
-                        error_6 = _a.sent();
-                        console.log(error_6);
+                        error_7 = _a.sent();
+                        console.log(error_7);
                         data_post.resultInsert = "Thất bại";
                         data_post.style = "red";
                         return [2 /*return*/, data_post];

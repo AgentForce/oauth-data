@@ -6,6 +6,7 @@ import { User } from '../models/User';
 import * as Joi from 'joi';
 import { sequelize } from "./../db/db";
 import * as lodash from "lodash";
+import * as moment from "moment";
 
 var phoneValidator = require('joi-phone-validator');
 
@@ -129,6 +130,41 @@ export default class UserRoutes {
 
     }
 
+    async getRemind(req: any, res: Response, next: NextFunction) {
+        let result = {
+            data: [],
+            msg: "",
+            pagenumber: req.params.page,
+            pagesize: req.params.size,
+            total: 0
+        };
+        try {
+            let offset = 0;
+            if( req.params.page > 1){
+                offset = (req.params.page -1) * req.params.size ;
+            }
+            if(req.params.size < 0) offset = 20;
+            result["data"] = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and  " +  '"remind_date"' + " < '" + moment().format('YYYY-MM-DD') + "'::date LIMIT " + req.params.size + " OFFSET " + offset,
+            { replacements: { }, type: sequelize.QueryTypes.SELECT }
+            ).then(projects => {
+                return projects;
+            })
+
+            
+            result.total = await sequelize.query("select * from oauth_users where resource_ids = 'SOP_API' and  " +  '"remind_date"' + " < '" + moment().format('YYYY-MM-DD') + "'::date",
+            { replacements: { }, type: sequelize.QueryTypes.SELECT }
+            ).then(projects => {
+                return projects.length;
+            })
+            await res.json(result);
+        } catch (error) {
+            apiErrorHandler(error, req, res, "Get all User failed. ");
+        }
+ 
+       
+
+    }
+
     async getDashboard(req: any, res: Response, next: NextFunction) {
         let resQ: any;
         // resQ = await sequelize.query("select * from oauth_users where '56' @> report_to_list ",
@@ -210,6 +246,8 @@ export default class UserRoutes {
             data_post.report_to_list = "";
             data_post.report_to = "";
             data_post.report_to_username = "";
+            // Add remind_date
+            data_post.remind_date = moment().add(11, 'M');
             // data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
             user_insert = await User.create(data_post)
                             .then((result) => { 
@@ -496,6 +534,9 @@ export class UserSupport {
             data_post.report_to_list = "";
             data_post.report_to = "";
             data_post.report_to_username = "";
+            // Add remind_date
+            data_post.remind_date = moment().add(11, 'M');
+
             // data_post.scope = "camp,post_lead,leader,camp_post,read,delete";
 
             // console.log(data_post);

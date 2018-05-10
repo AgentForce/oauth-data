@@ -11,6 +11,7 @@ export const User = sequelize.define("oauth_user", {
     district: ORM.INTEGER,
     gender: ORM.INTEGER,
     birthday: ORM.DATE,
+    remind_date: ORM.DATE,
     level: ORM.INTEGER,
     status: ORM.INTEGER,
     lastlogin: ORM.DATE,

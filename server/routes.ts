@@ -58,7 +58,7 @@ export default class Routes {
         app.route("/api/dashboard/:id").get( this.usersCtrl.getDashboard);
         app.route("/api/reportto/:id").get( this.usersCtrl.getReportToID);
         app.route("/api/export").post( this.usersCtrl.postExport);
-
+        app.route("/api/remind/:page/:size").get( this.usersCtrl.getRemind);
         
     }
 }
