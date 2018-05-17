@@ -7,6 +7,8 @@ import * as Joi from 'joi';
 import { sequelize } from "./../db/db";
 import * as lodash from "lodash";
 import * as moment from "moment";
+const bcrypt = require("bcrypt-nodejs");
+const crypto = require("crypto");
 
 var phoneValidator = require('joi-phone-validator');
 
@@ -415,44 +417,102 @@ export default class UserRoutes {
         })
         
     }
-
+    
     updatePassUser(req: Request, res: Response, next: NextFunction) {
         
-        const data_put = {password: req.body.password};
-        User.update(data_put, { where: { username: req.params.username } })
-            .then((result) => {
-                const res_return = {
-                    "success": true,
-                    "result": result
-                }
-                if( result[0] < 1 ){
-                    res_return.success = false;
-                }
-                res.json(res_return);
-             })
-            .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+        const data_put = {password: "", salt: ""};
+        
+        bcrypt.genSalt(10, (err, salt) => {
+            // console.log("salt = " + salt);
+            if (err) { res.json(err); }
+            bcrypt.hash(req.body.password, salt, undefined, (err: any, hash) => {
+                if (err) { return next(err); }
+                data_put.password = hash;
+                data_put.salt = salt;
+
+                User.update(data_put, { where: { username: req.params.username } })
+                .then((result) => {
+                    const res_return = {
+                        "success": true,
+                        "result": result
+                    }
+                    if( result[0] < 1 ){
+                        res_return.success = false;
+                    }
+                    res.json(res_return);
+                })
+                .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+                
+            });
+        });
     }
 
     resetPassUser(req: Request, res: Response, next: NextFunction) {
         
-        const data_put = {password: "uK8748", status: 0};
-        User.update(data_put, { where: { username: req.params.username } })
-            .then((result) => {
-                const res_return = {
-                    "success": true,
-                    "result": result
-                }
-                if( result[0] < 1 ){
-                    res_return.success = false;
-                }
-                res.json(res_return);
-             })
-            .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+        const data_put = {password: "", salt: "", status: 0};
+        bcrypt.genSalt(10, (err, salt) => {
+            // console.log("salt = " + salt);
+            if (err) { res.json(err); }
+            bcrypt.hash("123456", salt, undefined, (err: any, hash) => {
+                if (err) { return next(err); }
+                data_put.password = hash;
+                data_put.salt = salt;
+
+                User.update(data_put, { where: { username: req.params.username } })
+                .then((result) => {
+                    const res_return = {
+                        "success": true,
+                        "result": result
+                    }
+                    if( result[0] < 1 ){
+                        res_return.success = false;
+                    }
+                    res.json(res_return);
+                })
+                .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+                
+            });
+        });
+
     }
 
     changePassUser(req: Request, res: Response, next: NextFunction) {
         
-        const data_put = req.body; // {password: "uK8748", status: 0}; old_pass and password
+        /*bcrypt.genSalt(10, (err, salt) => {
+            console.log("salt = " + salt);
+            if (err) { return next(err); }
+            bcrypt.hash("123456", salt, undefined, (err: any, hash) => {
+            if (err) { return next(err); }
+            console.log("Password: " + hash);
+            next();
+            });
+        });*/
+        const data_put = {password: "", salt: ""};
+        bcrypt.genSalt(10, (err, salt) => {
+            // console.log("salt = " + salt);
+            if (err) { res.json(err); }
+            bcrypt.hash(req.body.password, salt, undefined, (err: any, hash) => {
+                if (err) { return next(err); }
+                data_put.password = hash;
+                data_put.salt = salt;
+
+                User.update(data_put, { where: { username: req.params.username } })
+                .then((result) => {
+                    const res_return = {
+                        "success": true,
+                        "result": result
+                    }
+                    if( result[0] < 1 ){
+                        res_return.success = false;
+                    }
+                    res.json(res_return);
+                })
+                .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+                
+            });
+        });
+
+        /*const data_put = req.body; // {password: "uK8748", status: 0}; old_pass and password
         User.update(data_put, { where: { username: req.params.username, password: data_put.old_pass} })
             .then((result) => {
                 const res_return = {
@@ -464,7 +524,7 @@ export default class UserRoutes {
                 }
                 res.json(res_return);
              })
-            .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });
+            .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });*/
     }
 
     updateStatusOTPUser(req: Request, res: Response, next: NextFunction) {

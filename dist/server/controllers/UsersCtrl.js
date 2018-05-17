@@ -40,6 +40,8 @@ var api_1 = require("../handlers/api");
 var User_1 = require("../models/User");
 var db_1 = require("./../db/db");
 var moment = require("moment");
+var bcrypt = require("bcrypt-nodejs");
+var crypto = require("crypto");
 var phoneValidator = require('joi-phone-validator');
 var UserRoutes = /** @class */ (function () {
     function UserRoutes() {
@@ -548,49 +550,110 @@ var UserRoutes = /** @class */ (function () {
         });
     };
     UserRoutes.prototype.updatePassUser = function (req, res, next) {
-        var data_put = { password: req.body.password };
-        User_1.User.update(data_put, { where: { username: req.params.username } })
-            .then(function (result) {
-            var res_return = {
-                "success": true,
-                "result": result
-            };
-            if (result[0] < 1) {
-                res_return.success = false;
+        var data_put = { password: "", salt: "" };
+        bcrypt.genSalt(10, function (err, salt) {
+            // console.log("salt = " + salt);
+            if (err) {
+                res.json(err);
             }
-            res.json(res_return);
-        })
-            .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+            bcrypt.hash(req.body.password, salt, undefined, function (err, hash) {
+                if (err) {
+                    return next(err);
+                }
+                data_put.password = hash;
+                data_put.salt = salt;
+                User_1.User.update(data_put, { where: { username: req.params.username } })
+                    .then(function (result) {
+                    var res_return = {
+                        "success": true,
+                        "result": result
+                    };
+                    if (result[0] < 1) {
+                        res_return.success = false;
+                    }
+                    res.json(res_return);
+                })
+                    .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+            });
+        });
     };
     UserRoutes.prototype.resetPassUser = function (req, res, next) {
-        var data_put = { password: "uK8748", status: 0 };
-        User_1.User.update(data_put, { where: { username: req.params.username } })
-            .then(function (result) {
-            var res_return = {
-                "success": true,
-                "result": result
-            };
-            if (result[0] < 1) {
-                res_return.success = false;
+        var data_put = { password: "", salt: "", status: 0 };
+        bcrypt.genSalt(10, function (err, salt) {
+            // console.log("salt = " + salt);
+            if (err) {
+                res.json(err);
             }
-            res.json(res_return);
-        })
-            .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+            bcrypt.hash("123456", salt, undefined, function (err, hash) {
+                if (err) {
+                    return next(err);
+                }
+                data_put.password = hash;
+                data_put.salt = salt;
+                User_1.User.update(data_put, { where: { username: req.params.username } })
+                    .then(function (result) {
+                    var res_return = {
+                        "success": true,
+                        "result": result
+                    };
+                    if (result[0] < 1) {
+                        res_return.success = false;
+                    }
+                    res.json(res_return);
+                })
+                    .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+            });
+        });
     };
     UserRoutes.prototype.changePassUser = function (req, res, next) {
-        var data_put = req.body; // {password: "uK8748", status: 0}; old_pass and password
-        User_1.User.update(data_put, { where: { username: req.params.username, password: data_put.old_pass } })
-            .then(function (result) {
-            var res_return = {
-                "success": true,
-                "result": result
-            };
-            if (result[0] < 1) {
-                res_return.success = false;
+        /*bcrypt.genSalt(10, (err, salt) => {
+            console.log("salt = " + salt);
+            if (err) { return next(err); }
+            bcrypt.hash("123456", salt, undefined, (err: any, hash) => {
+            if (err) { return next(err); }
+            console.log("Password: " + hash);
+            next();
+            });
+        });*/
+        var data_put = { password: "", salt: "" };
+        bcrypt.genSalt(10, function (err, salt) {
+            // console.log("salt = " + salt);
+            if (err) {
+                res.json(err);
             }
-            res.json(res_return);
-        })
-            .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+            bcrypt.hash(req.body.password, salt, undefined, function (err, hash) {
+                if (err) {
+                    return next(err);
+                }
+                data_put.password = hash;
+                data_put.salt = salt;
+                User_1.User.update(data_put, { where: { username: req.params.username } })
+                    .then(function (result) {
+                    var res_return = {
+                        "success": true,
+                        "result": result
+                    };
+                    if (result[0] < 1) {
+                        res_return.success = false;
+                    }
+                    res.json(res_return);
+                })
+                    .catch(function (err) { console.log(err); errorHandler_1.apiErrorHandler(err, req, res, "updation of User " + req.params.username + "  failed."); });
+            });
+        });
+        /*const data_put = req.body; // {password: "uK8748", status: 0}; old_pass and password
+        User.update(data_put, { where: { username: req.params.username, password: data_put.old_pass} })
+            .then((result) => {
+                const res_return = {
+                    "success": true,
+                    "result": result
+                }
+                if( result[0] < 1 ){
+                    res_return.success = false;
+                }
+                res.json(res_return);
+             })
+            .catch((err) => { console.log(err); apiErrorHandler(err, req, res, `updation of User ${req.params.username}  failed.`); });*/
     };
     UserRoutes.prototype.updateStatusOTPUser = function (req, res, next) {
         var data_put = { status: 1 };
