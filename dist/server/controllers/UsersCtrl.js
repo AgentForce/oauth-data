@@ -403,6 +403,8 @@ var UserRoutes = /** @class */ (function () {
                         datapost = {
                             "UserId": user_insert.id,
                             "FullName": user_insert.fullName,
+                            "BirthDay": user_insert.birthday,
+                            "UserName": user_insert.username,
                             "LevelCode": parseInt(user_insert.level),
                             "ReportTo": data_put.report_to,
                             "ReportToList": data_put.report_to_list
@@ -747,6 +749,8 @@ var UserSupport = /** @class */ (function () {
                         datapost = {
                             "UserId": user_insert.id,
                             "FullName": user_insert.fullName,
+                            "BirthDay": user_insert.birthday,
+                            "UserName": user_insert.username,
                             "LevelCode": parseInt(user_insert.level),
                             "ReportTo": data_put.report_to,
                             "ReportToList": data_put.report_to_list
