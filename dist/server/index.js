@@ -2,9 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 console.log("abc");
 var bodyParser = require("body-parser");
-var morgan = require("morgan");
-var fs = require("fs");
-var path = require("path");
 var config_1 = require("./config/config");
 var dotenv = require("dotenv");
 var mongoose = require("mongoose");
@@ -38,8 +35,8 @@ var Server = /** @class */ (function () {
             ('0' + (d.getMonth() + 1)).slice(-2),
             ('0' + d.getDate()).slice(-2)
         ].join('-');
-        var accessLogStream = fs.createWriteStream(path.join(__dirname, "./logs/" + date + "-access.log"), { flags: "a" });
-        app.use(morgan("combined", { stream: accessLogStream }));
+        // const accessLogStream: WriteStream = fs.createWriteStream(path.join(__dirname, "./logs/" + date + "-access.log"), { flags: "a" });
+        // app.use(morgan("combined", { stream: accessLogStream }));
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
         app.use(bearerToken());

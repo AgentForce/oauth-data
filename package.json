@@ -4,6 +4,7 @@
   "description": "API data oauth",
   "scripts": {
     "dev": "NODE_ENV=product nodemon ./dist/server.js",
+    "dev-win": "set NODE_ENV=product&&nodemon ./dist/server.js",
     "start": "NODE_ENV=product forever start ./dist/server.js",
     "build": "tsc",
     "watch": "tsc -w"

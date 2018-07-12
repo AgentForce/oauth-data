@@ -8,7 +8,7 @@ dotenv.config({ path: ".env." + process.env.NODE_ENV });
 
 const app: Application = express();
 const server: Server = new Server(app);
-const port: number = process.env.PORT;//nconf.get("http:port");
+const port: any = process.env.PORT;//nconf.get("http:port");
 // const port = 5200;
 // console.log(process.env.PORT);
 app.listen(port, "0.0.0.0", function (err: any) {
